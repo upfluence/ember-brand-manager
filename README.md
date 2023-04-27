@@ -1,7 +1,7 @@
-ember-brand-manager
+@upfluence/ember-brand-manager
 ==============================================================================
 
-White labeling brought to Ember !
+White-labeling brand manager for Ember.
 
 Work in progress - more features to come !
 
@@ -17,7 +17,7 @@ Installation
 ------------------------------------------------------------------------------
 
 ```
-ember install ember-brand-manager
+ember install @upfluence/ember-brand-manager
 ```
 
 Create a `brand-assets` folder at the root of your repository

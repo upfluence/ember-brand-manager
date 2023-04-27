@@ -35,9 +35,7 @@ module.exports = {
 };
 
 function checkIfEngine(parentPkg) {
-  if (parentPkg.keywords && parentPkg.keywords.includes('ember-engine'))
-    return true;
-  return false;
+  return parentPkg.keywords && parentPkg.keywords.includes('ember-engine')
 }
 
 function setPublicAssets(trees, brand, origin, isEngine) {
