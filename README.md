@@ -22,6 +22,7 @@ ember install @upfluence/ember-brand-manager
 
 Create a `brand-assets` folder at the root of your repository
 Move your public assets into this new folder. You should have something that looks like :
+```shell
 └── brand-assets/
     ├── default/
     │   └── public/
@@ -35,6 +36,7 @@ Move your public assets into this new folder. You should have something that loo
             └── assets/
                 └── images/
                     └──logo.png
+```
 
 Usage
 ------------------------------------------------------------------------------
