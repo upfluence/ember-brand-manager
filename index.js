@@ -1,15 +1,15 @@
-"use strict";
-const mergeTrees = require("broccoli-merge-trees");
-const Funnel = require("broccoli-funnel");
-const fs = require("fs");
+'use strict';
+const mergeTrees = require('broccoli-merge-trees');
+const Funnel = require('broccoli-funnel');
+const fs = require('fs');
 
-const DEFAULT_BRAND = "default";
-const DEFAULT_PAGE_TITLE = "Upfluence Software";
+const DEFAULT_BRAND = 'default';
+const DEFAULT_PAGE_TITLE = 'Upfluence Software';
 
 module.exports = {
-  name: require("./package").name,
+  name: require('./package').name,
   options: {
-    "@embroider/macros": {
+    '@embroider/macros': {
       setOwnConfig: {
         brand: process.env.BRAND || DEFAULT_BRAND,
         brandPageTitle: process.env.BRAND_PAGE_TITLE || DEFAULT_PAGE_TITLE
@@ -18,26 +18,26 @@ module.exports = {
   },
 
   contentFor(type) {
-    const targetBrand = this.options["@embroider/macros"].setOwnConfig.brand;
+    const targetBrand = this.options['@embroider/macros'].setOwnConfig.brand;
 
-    if (type === "page-title") {
-      return this.options["@embroider/macros"].setOwnConfig.brandPageTitle;
+    if (type === 'page-title') {
+      return this.options['@embroider/macros'].setOwnConfig.brandPageTitle;
     }
 
     if (
-      type === "head-footer" &&
+      type === 'head-footer' &&
       targetBrand !== DEFAULT_BRAND &&
       fs.existsSync(`${this.parent.root}/brand-assets/${targetBrand}/color-scheme.json`)
     ) {
       const colors = JSON.parse(
-        fs.readFileSync(`${this.parent.root}/brand-assets/${targetBrand}/color-scheme.json`, "utf8")
+        fs.readFileSync(`${this.parent.root}/brand-assets/${targetBrand}/color-scheme.json`, 'utf8')
       );
 
       const formattedStyle = Object.keys(colors)
         .map((v) => {
           return `${v}: ${colors[v]};`;
         })
-        .join("");
+        .join('');
 
       return `<style>:root { ${formattedStyle} }</style>`;
     }
@@ -45,7 +45,7 @@ module.exports = {
 
   treeForPublic(tree) {
     let trees = [];
-    const targetBrand = this.options["@embroider/macros"].setOwnConfig.brand;
+    const targetBrand = this.options['@embroider/macros'].setOwnConfig.brand;
     const pkgName = this.parent.pkg.name;
     const isEngine = checkIfEngine(this.parent.pkg);
 
@@ -65,20 +65,20 @@ module.exports = {
 };
 
 function checkIfEngine(parentPkg) {
-  return parentPkg.keywords && parentPkg.keywords.includes("ember-engine");
+  return parentPkg.keywords && parentPkg.keywords.includes('ember-engine');
 }
 
 function setPublicAssets(trees, brand, origin, isEngine) {
-  debugLog(`[EBM] Funneling ${brand} assets to dist/${isEngine ? origin : "assets"}`);
+  debugLog(`[EBM] Funneling ${brand} assets to dist/${isEngine ? origin : 'assets'}`);
 
   trees.push(
-    new Funnel("./", {
+    new Funnel('./', {
       srcDir: `brand-assets/${brand}/public`,
-      destDir: isEngine ? origin : "."
+      destDir: isEngine ? origin : '.'
     })
   );
 }
 
 function debugLog(message) {
-  if (process.env.EBM_DEBUG === "true") console.info(message);
+  if (process.env.EBM_DEBUG === 'true') console.info(message);
 }
