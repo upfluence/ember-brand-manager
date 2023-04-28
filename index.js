@@ -24,23 +24,7 @@ module.exports = {
       return this.options['@embroider/macros'].setOwnConfig.brandPageTitle;
     }
 
-    if (
-      type === 'head-footer' &&
-      targetBrand !== DEFAULT_BRAND &&
-      fs.existsSync(`${this.parent.root}/brand-assets/${targetBrand}/color-scheme.json`)
-    ) {
-      const colors = JSON.parse(
-        fs.readFileSync(`${this.parent.root}/brand-assets/${targetBrand}/color-scheme.json`, 'utf8')
-      );
-
-      const formattedStyle = Object.keys(colors)
-        .map((v) => {
-          return `${v}: ${colors[v]};`;
-        })
-        .join('');
-
-      return `<style>:root { ${formattedStyle} }</style>`;
-    }
+    return colorSchemeStyle(targetBrand, this.parent.root, type);
   },
 
   treeForPublic(tree) {
@@ -77,6 +61,26 @@ function setPublicAssets(trees, brand, origin, isEngine) {
       destDir: isEngine ? origin : '.'
     })
   );
+}
+
+function colorSchemeStyle(targetBrand, root, type) {
+  if (
+    type === 'head-footer' &&
+    targetBrand !== DEFAULT_BRAND &&
+    fs.existsSync(`${root}/brand-assets/${targetBrand}/color-scheme.json`)
+  ) {
+    const colors = JSON.parse(fs.readFileSync(`${root}/brand-assets/${targetBrand}/color-scheme.json`, 'utf8'));
+
+    const formattedStyle = Object.keys(colors)
+      .map((v) => {
+        return `${v}: ${colors[v]};`;
+      })
+      .join('');
+
+    debugLog(`[EBM] Color Scheme: ${formattedStyle}`);
+
+    return `<style>:root { ${formattedStyle} }</style>`;
+  }
 }
 
 function debugLog(message) {
