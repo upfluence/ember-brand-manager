@@ -31,6 +31,7 @@ Move your public assets into this new folder. You should have something that loo
     │           └── images/
     │               └──logo.png
     └── brand2/
+        └── color-scheme.json
         └── public/
             ├── favicon.png
             └── assets/
@@ -56,6 +57,22 @@ or
 
 ## Engines
 This addon will also work with ember-engines. The destination folder in the `dist` will have the pakage name in order to keep the original asset serving of the engines functional.
+
+## Color Schemes
+
+The `brand-assets/[brand]/color-scheme.json` is a key-value formatted file that maps CSS Variables to their values.
+Eg.:
+
+```json
+{
+  "--color-primary-50": "#faf5ff",
+  "--color-primary-100": "#f3e8ff",
+  "--color-primary-400": "#C58CFE",
+  "--color-primary-500": "#A241FF",
+  "--color-primary-600": "#8521E0",
+  "--color-primary-900": "#440973"
+}
+```
 
 ## Debugging
 Some debugging is available by setting the EBM_DEBUG env variable to true.
