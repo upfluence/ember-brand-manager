@@ -55,10 +55,13 @@ function checkIfEngine(parentPkg) {
 function setPublicAssets(trees, brand, origin, isEngine) {
   debugLog(`[EBM] Funneling ${brand} assets to dist/${isEngine ? origin : 'assets'}`);
 
+  const srcDir = isEngine ? `./node_modules/${origin}/` : './';
+  const destDir = isEngine ? origin : '.';
+
   trees.push(
-    new Funnel('./', {
+    new Funnel(srcDir, {
       srcDir: `brand-assets/${brand}/public`,
-      destDir: isEngine ? origin : '.'
+      destDir
     })
   );
 }
