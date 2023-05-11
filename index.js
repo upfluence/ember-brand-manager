@@ -51,10 +51,6 @@ module.exports = {
   setPublicAssets(trees, brand, origin, isEngine) {
     debugLog(`[EBM] Funneling ${brand} assets to dist/${isEngine ? origin : 'assets'}`);
 
-    if (isEngine) {
-      console.log('<<<', origin, this.parent.pkg.root);
-    }
-
     const srcDir = isEngine ? this.parent.pkg.root : './';
     const destDir = isEngine ? origin : '.';
 
