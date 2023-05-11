@@ -39,31 +39,36 @@ module.exports = {
       trees.push(tree);
     }
 
-    setPublicAssets(trees, DEFAULT_BRAND, pkgName, isEngine);
+    this.setPublicAssets(trees, DEFAULT_BRAND, pkgName, isEngine);
+
     if (targetBrand !== DEFAULT_BRAND) {
-      setPublicAssets(trees, targetBrand, pkgName, isEngine);
+      this.setPublicAssets(trees, targetBrand, pkgName, isEngine);
     }
 
     return mergeTrees(trees, { overwrite: true });
+  },
+
+  setPublicAssets(trees, brand, origin, isEngine) {
+    debugLog(`[EBM] Funneling ${brand} assets to dist/${isEngine ? origin : 'assets'}`);
+
+    if (isEngine) {
+      console.log('<<<', origin, this.parent.pkg.root);
+    }
+
+    const srcDir = isEngine ? this.parent.pkg.root : './';
+    const destDir = isEngine ? origin : '.';
+
+    trees.push(
+      new Funnel(srcDir, {
+        srcDir: `brand-assets/${brand}/public`,
+        destDir
+      })
+    );
   }
 };
 
 function checkIfEngine(parentPkg) {
   return parentPkg.keywords && parentPkg.keywords.includes('ember-engine');
-}
-
-function setPublicAssets(trees, brand, origin, isEngine) {
-  debugLog(`[EBM] Funneling ${brand} assets to dist/${isEngine ? origin : 'assets'}`);
-
-  const srcDir = isEngine ? `./node_modules/${origin}/` : './';
-  const destDir = isEngine ? origin : '.';
-
-  trees.push(
-    new Funnel(srcDir, {
-      srcDir: `brand-assets/${brand}/public`,
-      destDir
-    })
-  );
 }
 
 function colorSchemeStyle(targetBrand, root, type) {
