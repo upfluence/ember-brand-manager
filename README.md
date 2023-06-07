@@ -92,7 +92,7 @@ A common usage would be to display data for two different brands (default & bran
 ## Decorators
 
 The `@requiredBrand` decorator allows restricting navigation to a specific route if the target brand is not the one defined at buildtime.
-It's parameters are:
+Its parameters are:
 - `brand` - In our examples either "default" or "brand2"
 - `fallbackRoute` - the route as string that will be called by the Ember router's `transitionTo` method
 
