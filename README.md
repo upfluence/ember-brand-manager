@@ -74,6 +74,21 @@ Eg.:
 }
 ```
 
+## Helpers
+
+The `required-brand` helper gives an easy way of checking if the target-brand matches the one set during buildtime.
+`required-brand` takes a brand name (string) as parameter, will compare it to the one configured at buildtime and return true/false if it matches.
+
+A common usage would be to display data for two different brands (default & brand2) in a template.
+
+```handlebars
+  {{#if (required-brand "brand2")}}
+    If brand2 is set at buildtime, brand2 content will be shown here
+  {{else}}
+    Default content will be displayed if brand2 is not set at buildtime
+  {{/if}}
+```
+
 ## Debugging
 Some debugging is available by setting the EBM_DEBUG env variable to true.
 
