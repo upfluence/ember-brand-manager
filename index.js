@@ -30,32 +30,47 @@ module.exports = {
   treeForPublic(tree) {
     let trees = [];
     const targetBrand = this.options['@embroider/macros'].setOwnConfig.brand;
-    const pkgName = this.parent.pkg.name;
-    const isEngine = checkIfEngine(this.parent.pkg);
+    const ebmCandidates = this.parent.addons
+      .map((addon) => addon.addons)
+      .flat()
+      .filter((a) => a.addons.find((addon) => addon.pkg.name.includes('@upfluence/ember-brand-manager')))
+      .reduce(
+        (acc, v) => {
+          console.log('<< fo', v.name, v.pkg.root);
+          acc.push({ pkgName: v.name, isEngine: true, srcDir: v.pkg.root });
+          return acc;
+        },
+        [{ pkgName: this.parent.pkg.name, isEngine: checkIfEngine(this.parent.pkg) }]
+      );
 
-    debugLog(`\n[EBM] Target brand : [${targetBrand}]`);
-    debugLog(`[EBM] Parent pkg name : [${pkgName}]`);
     if (tree) {
       trees.push(tree);
     }
 
-    this.setPublicAssets(trees, DEFAULT_BRAND, pkgName, isEngine);
+    debugLog(`\n[EBM] Target brand : [${targetBrand}]`);
 
-    if (targetBrand !== DEFAULT_BRAND) {
-      this.setPublicAssets(trees, targetBrand, pkgName, isEngine);
-    }
+    ebmCandidates.forEach((ebmCandidate) => {
+      debugLog(`[EBM] Pkg name : [${ebmCandidate.pkgName}]`);
+
+      this.setPublicAssets(trees, DEFAULT_BRAND, ebmCandidate.pkgName, ebmCandidate.isEngine, ebmCandidate.srcDir);
+
+      if (targetBrand !== DEFAULT_BRAND) {
+        this.setPublicAssets(trees, targetBrand, ebmCandidate.pkgName, ebmCandidate.isEngine, ebmCandidate.srcDir);
+      }
+    });
 
     return mergeTrees(trees, { overwrite: true });
   },
 
-  setPublicAssets(trees, brand, origin, isEngine) {
+  setPublicAssets(trees, brand, origin, isEngine, srcDir) {
     debugLog(`[EBM] Funneling ${brand} assets to dist/${isEngine ? origin : 'assets'}`);
 
-    const srcDir = isEngine ? this.parent.pkg.root : './';
+    const _srcDir = srcDir ?? (isEngine ? this.parent.pkg.root : './');
     const destDir = isEngine ? origin : '.';
+    console.log('===> foobar', _srcDir, destDir, brand);
 
     trees.push(
-      new Funnel(srcDir, {
+      new Funnel(_srcDir, {
         srcDir: `brand-assets/${brand}/public`,
         destDir
       })
@@ -64,7 +79,7 @@ module.exports = {
 };
 
 function checkIfEngine(parentPkg) {
-  return parentPkg.keywords && parentPkg.keywords.includes('ember-engine');
+  return parentPkg.keywords && parentPkg.keywords.includes('ember-addon');
 }
 
 function colorSchemeStyle(targetBrand, root, type) {
