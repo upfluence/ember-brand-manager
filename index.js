@@ -33,14 +33,15 @@ module.exports = {
     const ebmCandidates = this.parent.addons
       .map((addon) => addon.addons)
       .flat()
-      .filter((a) => a.addons.find((addon) => addon.pkg.name.includes('@upfluence/ember-brand-manager')))
+      .filter((parentAddon) =>
+        parentAddon.addons.find((addon) => addon.pkg.name.includes('@upfluence/ember-brand-manager'))
+      )
       .reduce(
-        (acc, v) => {
-          console.log('<< fo', v.name, v.pkg.root);
-          acc.push({ pkgName: v.name, isEngine: true, srcDir: v.pkg.root });
+        (acc, addon) => {
+          acc.push({ pkgName: addon.name, isAddon: true, srcDir: addon.pkg.root });
           return acc;
         },
-        [{ pkgName: this.parent.pkg.name, isEngine: checkIfEngine(this.parent.pkg) }]
+        [{ pkgName: this.parent.pkg.name, isAddon: checkIfAddon(this.parent.pkg) }]
       );
 
     if (tree) {
@@ -52,22 +53,21 @@ module.exports = {
     ebmCandidates.forEach((ebmCandidate) => {
       debugLog(`[EBM] Pkg name : [${ebmCandidate.pkgName}]`);
 
-      this.setPublicAssets(trees, DEFAULT_BRAND, ebmCandidate.pkgName, ebmCandidate.isEngine, ebmCandidate.srcDir);
+      this.setPublicAssets(trees, DEFAULT_BRAND, ebmCandidate.pkgName, ebmCandidate.isAddon, ebmCandidate.srcDir);
 
       if (targetBrand !== DEFAULT_BRAND) {
-        this.setPublicAssets(trees, targetBrand, ebmCandidate.pkgName, ebmCandidate.isEngine, ebmCandidate.srcDir);
+        this.setPublicAssets(trees, targetBrand, ebmCandidate.pkgName, ebmCandidate.isAddon, ebmCandidate.srcDir);
       }
     });
 
     return mergeTrees(trees, { overwrite: true });
   },
 
-  setPublicAssets(trees, brand, origin, isEngine, srcDir) {
-    debugLog(`[EBM] Funneling ${brand} assets to dist/${isEngine ? origin : 'assets'}`);
+  setPublicAssets(trees, brand, origin, isAddon, srcDir) {
+    debugLog(`[EBM] Funneling ${brand} assets to dist/${isAddon ? origin : 'assets'}`);
 
-    const _srcDir = srcDir ?? (isEngine ? this.parent.pkg.root : './');
-    const destDir = isEngine ? origin : '.';
-    console.log('===> foobar', _srcDir, destDir, brand);
+    const _srcDir = srcDir ?? (isAddon ? this.parent.pkg.root : './');
+    const destDir = isAddon ? origin : '.';
 
     trees.push(
       new Funnel(_srcDir, {
@@ -78,7 +78,7 @@ module.exports = {
   }
 };
 
-function checkIfEngine(parentPkg) {
+function checkIfAddon(parentPkg) {
   return parentPkg.keywords && parentPkg.keywords.includes('ember-addon');
 }
 
