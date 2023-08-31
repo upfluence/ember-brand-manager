@@ -55,8 +55,9 @@ To specify another brand, either define a `BRAND` environment value in your envi
 or
 `BRAND=brand2 ember s`
 
-## Engines
-This addon will also work with ember-engines. The destination folder in the `dist` will have the pakage name in order to keep the original asset serving of the engines functional.
+## Addons
+
+This addon will also work with ember-addons. The destination folder in the `dist` will have the pakage name in order to keep the original asset serving of the addon functional. Engines being Ember Addons, they will also be supported natively.
 
 ## Color Schemes
 
