@@ -14,6 +14,9 @@ module.exports = {
         brand: process.env.BRAND || DEFAULT_BRAND,
         brandPageTitle: process.env.BRAND_PAGE_TITLE || DEFAULT_PAGE_TITLE
       }
+    },
+    babel: {
+      plugins: [...require('ember-cli-code-coverage').buildBabelPlugin()],
     }
   },
 
