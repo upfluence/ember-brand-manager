@@ -23,6 +23,8 @@ export function requiredBrand(brand: string, fallbackRoute: string) {
         );
         if ((getOwnConfig() as any).brand !== brand) {
           this.router.transitionTo(fallbackRoute);
+        } else {
+          super.beforeModel()
         }
       }
     }
