@@ -3,11 +3,14 @@ const mergeTrees = require('broccoli-merge-trees');
 const Funnel = require('broccoli-funnel');
 const fs = require('fs');
 
+const { name, version } = require('./package');
+
 const DEFAULT_BRAND = 'default';
 const DEFAULT_PAGE_TITLE = 'Upfluence Software';
 
 module.exports = {
-  name: require('./package').name,
+  name,
+  version,
 
   options: {
     '@embroider/macros': {
