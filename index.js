@@ -8,15 +8,21 @@ const DEFAULT_PAGE_TITLE = 'Upfluence Software';
 
 module.exports = {
   name: require('./package').name,
+
   options: {
     '@embroider/macros': {
       setOwnConfig: {
         brand: process.env.BRAND || DEFAULT_BRAND,
         brandPageTitle: process.env.BRAND_PAGE_TITLE || DEFAULT_PAGE_TITLE
       }
-    },
-    babel: {
-      plugins: [...require('ember-cli-code-coverage').buildBabelPlugin()],
+    }
+  },
+
+  included(parent) {
+    this._super.included.apply(this, arguments);
+
+    if (parent.name === 'dummy') {
+      this.options.babel.plugins.push(...require('ember-cli-code-coverage').buildBabelPlugin());
     }
   },
 
