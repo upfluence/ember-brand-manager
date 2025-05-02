@@ -25,9 +25,9 @@
     "lint:js:fix": "eslint . --fix",
     "start": "ember serve",
     "test": "npm-run-all lint test:*",
-    "test:ember": "ember test",
+    "test:ember": "ember test --silent -r dot",
     "test:ember-compatibility": "ember try:each",
-    "test:coverage": "COVERAGE=true pnpm test",
+    "test:coverage": "COVERAGE=true pnpm test:ember",
     "prepack": "ember ts:precompile",
     "postpack": "ember ts:clean"
   },
