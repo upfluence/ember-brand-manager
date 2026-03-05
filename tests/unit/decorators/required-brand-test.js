@@ -1,6 +1,7 @@
-import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { module, test } from 'qunit';
 import sinon from 'sinon';
+
 import { requiredBrand } from '@upfluence/ember-brand-manager/decorators/required-brand';
 
 module('Unit | Decorators | @requiredBrand', function (hooks) {
