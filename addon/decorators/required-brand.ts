@@ -1,6 +1,7 @@
 import { getOwnConfig } from '@embroider/macros';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
+import Transition from '@ember/routing/transition';
 
 interface Constructable {
   new (...args: any[]): any;
@@ -12,7 +13,7 @@ export function requiredBrand(brand: string, fallbackRoute: string) {
       // @ts-ignore;
       @service declare router;
 
-      beforeModel() {
+      beforeModel(transition: Transition) {
         assert(
           '[EBM][Decorators][requiredBrand] The @brand parameter of type string is mandatory',
           typeof brand === 'string'
@@ -24,9 +25,9 @@ export function requiredBrand(brand: string, fallbackRoute: string) {
         if ((getOwnConfig() as any).brand !== brand) {
           this.router.transitionTo(fallbackRoute);
         } else {
-          super.beforeModel()
+          super.beforeModel(transition);
         }
       }
-    }
+    };
   };
 }
