@@ -33,6 +33,6 @@ jobs:
       - name: Publish
         run: |
           echo "//npm.pkg.github.com/:_authToken=$GITHUB_TOKEN" >> ~/.npmrc
-          npm publish --access public
+          pnpm --dir packages/ember-brand-manager publish --access public --no-git-checks
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

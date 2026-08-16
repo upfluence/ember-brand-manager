@@ -11,13 +11,9 @@ module.exports = {
     }
   },
   plugins: ['ember'],
-  extends: [
-    'eslint:recommended',
-    'plugin:ember/recommended',
-    'plugin:prettier/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:ember/recommended', 'plugin:prettier/recommended'],
   env: {
-    browser: true,
+    browser: true
   },
   rules: {},
   overrides: [
@@ -32,22 +28,22 @@ module.exports = {
         './testem.js',
         './blueprints/*/index.js',
         './config/**/*.js',
-        './tests/dummy/config/**/*.js',
+        './tests/dummy/config/**/*.js'
       ],
       parserOptions: {
-        sourceType: 'script',
+        sourceType: 'script'
       },
       env: {
         browser: false,
-        node: true,
+        node: true
       },
       plugins: ['node'],
-      extends: ['plugin:node/recommended'],
+      extends: ['plugin:node/recommended']
     },
     {
       // test files
       files: ['tests/**/*-test.{js,ts}'],
-      extends: ['plugin:qunit/recommended'],
-    },
-  ],
+      extends: ['plugin:qunit/recommended']
+    }
+  ]
 };

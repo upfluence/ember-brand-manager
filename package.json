@@ -1,110 +1,11 @@
 {
-  "name": "@upfluence/ember-brand-manager",
-  "version": "1.0.5",
-  "description": "White-labeling brand manager for Ember.",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
-  "keywords": [
-    "ember-addon"
-  ],
-  "repository": "",
-  "license": "MIT",
-  "author": "",
-  "directories": {
-    "doc": "doc",
-    "test": "tests"
-  },
+  "private": true,
   "scripts": {
-    "build": "ember build --environment=production",
-    "lint": "npm-run-all --aggregate-output --continue-on-error --parallel \"lint:!(fix)\"",
-    "lint:fix": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*:fix",
-    "lint:hbs": "ember-template-lint .",
-    "lint:hbs:fix": "ember-template-lint . --fix",
-    "lint:js": "eslint . --cache",
-    "lint:js:fix": "eslint . --fix",
-    "start": "ember serve",
-    "test": "npm-run-all lint test:*",
-    "test:ember": "ember test --silent -r dot",
-    "test:ember-compatibility": "ember try:each",
-    "test:coverage": "COVERAGE=true pnpm test:ember",
-    "prepack": "ember ts:precompile",
-    "postpack": "ember ts:clean"
-  },
-  "dependencies": {
-    "@embroider/macros": "^1.10.0",
-    "broccoli-funnel": "^3.0.8",
-    "broccoli-merge-trees": "^4.2.0",
-    "ember-cli-babel": "^8.2.0",
-    "ember-cli-htmlbars": "^6.3.0",
-    "ember-cli-typescript": "^5.2.1"
-  },
-  "devDependencies": {
-    "@ember/optional-features": "^2.0.0",
-    "@ember/test-helpers": "^2.6.0",
-    "@embroider/test-setup": "^0.48.1",
-    "@tsconfig/ember": "^2.0.0",
-    "@types/ember": "^4.0.3",
-    "@types/ember-qunit": "^6.1.1",
-    "@types/ember-resolver": "^9.0.0",
-    "@types/ember__application": "^4.0.5",
-    "@types/ember__array": "^4.0.3",
-    "@types/ember__component": "^4.0.13",
-    "@types/ember__controller": "^4.0.4",
-    "@types/ember__debug": "^4.0.3",
-    "@types/ember__destroyable": "^4.0.1",
-    "@types/ember__engine": "^4.0.4",
-    "@types/ember__error": "^4.0.2",
-    "@types/ember__object": "^4.0.5",
-    "@types/ember__polyfills": "^4.0.1",
-    "@types/ember__routing": "^4.0.12",
-    "@types/ember__runloop": "^4.0.2",
-    "@types/ember__service": "^4.0.2",
-    "@types/ember__string": "^3.0.10",
-    "@types/ember__template": "^4.0.1",
-    "@types/ember__test": "^4.0.1",
-    "@types/ember__test-helpers": "^2.9.1",
-    "@types/ember__utils": "^4.0.2",
-    "@types/qunit": "^2.19.5",
-    "@types/rsvp": "^4.0.4",
-    "@typescript-eslint/parser": "^5.9.1",
-    "babel-eslint": "^10.1.0",
-    "ember-auto-import": "^2.2.4",
-    "ember-cli": "~4.0.0",
-    "ember-cli-code-coverage": "^3.0.0",
-    "ember-cli-dependency-checker": "^3.2.0",
-    "ember-cli-inject-live-reload": "^2.1.0",
-    "ember-disable-prototype-extensions": "^1.1.3",
-    "ember-export-application-global": "^2.0.1",
-    "ember-load-initializers": "^2.1.2",
-    "ember-qunit": "^5.1.5",
-    "ember-resolver": "^8.0.3",
-    "ember-sinon-qunit": "^5.0.0",
-    "ember-source": "~4.0.1",
-    "ember-source-channel-url": "^3.0.0",
-    "ember-template-lint": "^3.15.0",
-    "ember-try": "^2.0.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-ember": "^10.5.8",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-qunit": "^7.2.0",
-    "loader.js": "^4.7.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^2.5.1",
-    "qunit": "^2.17.2",
-    "qunit-dom": "^2.0.0",
-    "typescript": "^5.1.3",
-    "webpack": "^5.65.0"
-  },
-  "engines": {
-    "node": "12.* || 14.* || >= 16"
-  },
-  "ember": {
-    "edition": "octane"
-  },
-  "ember-addon": {
-    "configPath": "tests/dummy/config"
+    "build": "pnpm --filter @upfluence/ember-brand-manager build",
+    "lint": "pnpm --filter @upfluence/ember-brand-manager lint",
+    "lint:fix": "pnpm --filter @upfluence/ember-brand-manager lint:fix",
+    "start": "pnpm --filter @upfluence/ember-brand-manager start",
+    "test": "pnpm --filter @upfluence/ember-brand-manager test",
+    "test:coverage": "pnpm --filter @upfluence/ember-brand-manager test:coverage"
   }
 }

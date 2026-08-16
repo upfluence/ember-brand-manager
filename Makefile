@@ -20,15 +20,21 @@ echo:
 	@echo Starting ember-brand-manager
 
 start:
-	ember s --port $(PORT) --environment ${ENV}
+	pnpm --filter @upfluence/ember-brand-manager exec ember serve --port $(PORT) --environment ${ENV}
 
 build:
-	ember build --environment ${ENV}
+	pnpm --filter @upfluence/ember-brand-manager exec ember build --environment ${ENV}
+
+test:
+	pnpm test
 
 clean: ## Cleans ./node_modules && ./dist
-	@echo "Cleaning up ./node_modules & ./dist folders"
+	@echo "Cleaning up workspace dependencies and build outputs"
 	-rm -r ./node_modules
 	-rm -r ./dist
+	-rm -r ./packages/ember-brand-manager/node_modules
+	-rm -r ./packages/ember-brand-manager/dist
+	-rm -r ./packages/ember-brand-manager/tmp
 	@echo ""; echo "-------------------------------"; echo ""
 
 re:	clean install echo start ## Reinstalls dependencies & starts the dev server
