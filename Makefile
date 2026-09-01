@@ -20,9 +20,11 @@ echo:
 	@echo Starting ember-brand-manager
 
 start:
+	pnpm --filter @upfluence/ember-brand-bundler build
 	pnpm --filter @upfluence/ember-brand-manager exec ember serve --port $(PORT) --environment ${ENV}
 
 build:
+	pnpm --filter @upfluence/ember-brand-bundler build
 	pnpm --filter @upfluence/ember-brand-manager exec ember build --environment ${ENV}
 
 test:
@@ -35,6 +37,8 @@ clean: ## Cleans ./node_modules && ./dist
 	-rm -r ./packages/ember-brand-manager/node_modules
 	-rm -r ./packages/ember-brand-manager/dist
 	-rm -r ./packages/ember-brand-manager/tmp
+	-rm -r ./packages/ember-brand-bundler/node_modules
+	-rm -r ./packages/ember-brand-bundler/dist
 	@echo ""; echo "-------------------------------"; echo ""
 
 re:	clean install echo start ## Reinstalls dependencies & starts the dev server

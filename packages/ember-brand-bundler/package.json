@@ -1,0 +1,45 @@
+{
+  "name": "@upfluence/ember-brand-bundler",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Host-side build tooling for white-labelled branded Ember applications.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/upfluence/ember-brand-manager",
+    "directory": "packages/ember-brand-bundler"
+  },
+  "license": "MIT",
+  "type": "commonjs",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    "./ember-cli": {
+      "types": "./dist/ember-cli/index.d.ts",
+      "require": "./dist/ember-cli/index.js",
+      "default": "./dist/ember-cli/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "lint": "tsc --project tsconfig.json --noEmit",
+    "prepack": "pnpm run build",
+    "test": "pnpm run build && node --test"
+  },
+  "dependencies": {
+    "@embroider/macros": "^1.10.0",
+    "broccoli-funnel": "^3.0.8",
+    "broccoli-merge-trees": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/broccoli-funnel": "^3.0.4",
+    "@types/broccoli-merge-trees": "^4.2.4",
+    "@types/node": "^20.19.0",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

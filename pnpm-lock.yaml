@@ -6,11 +6,13 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      '@upfluence/ember-brand-bundler':
+        specifier: workspace:*
+        version: link:packages/ember-brand-bundler
 
-  packages/ember-brand-bundler: {}
-
-  packages/ember-brand-manager:
+  packages/ember-brand-bundler:
     dependencies:
       '@embroider/macros':
         specifier: ^1.10.0
@@ -21,6 +23,25 @@ importers:
       broccoli-merge-trees:
         specifier: ^4.2.0
         version: 4.2.0
+    devDependencies:
+      '@types/broccoli-funnel':
+        specifier: ^3.0.4
+        version: 3.0.4
+      '@types/broccoli-merge-trees':
+        specifier: ^4.2.4
+        version: 4.2.4
+      '@types/node':
+        specifier: ^20.19.0
+        version: 20.19.43
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+
+  packages/ember-brand-manager:
+    dependencies:
+      '@embroider/macros':
+        specifier: ^1.10.0
+        version: 1.10.0
       ember-cli-babel:
         specifier: ^8.2.0
         version: 8.2.0(@babel/core@7.21.4)
@@ -114,7 +135,7 @@ importers:
         version: 4.0.4
       '@typescript-eslint/parser':
         specifier: ^5.9.1
-        version: 5.59.9(eslint@7.32.0)(typescript@5.1.3)
+        version: 5.59.9(eslint@7.32.0)(typescript@5.9.3)
       babel-eslint:
         specifier: ^10.1.0
         version: 10.1.0(eslint@7.32.0)
@@ -197,8 +218,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       typescript:
-        specifier: ^5.1.3
-        version: 5.1.3
+        specifier: ^5.9.3
+        version: 5.9.3
       webpack:
         specifier: ^5.65.0
         version: 5.81.0
@@ -1005,6 +1026,12 @@ packages:
   '@types/body-parser@1.19.2':
     resolution: {integrity: sha512-ALYone6pm6QmwZoAgeyNksccT9Q4AWZQ6PvfwR37GT6r6FWUPguq6sUmNGSMV2Wr761oQoBxwGGa6DR5o1DC9g==}
 
+  '@types/broccoli-funnel@3.0.4':
+    resolution: {integrity: sha512-M8/dl2eDR65yMMp64av9IpG0kpKlAdr8R66qZxdouIkdcQqum7QHuPWGz5MYS1HWPonfVuF+qkiWiXLO3JjrHA==}
+
+  '@types/broccoli-merge-trees@4.2.4':
+    resolution: {integrity: sha512-UDjSmNuTZxi9xa3EZ0QGCcH9d2Ce1ha4dtyzkG++6SGdjpAhM2+/we3AjiVrJq7pSJsybXVhIz7+Irk49OTWiQ==}
+
   '@types/chai-as-promised@7.1.5':
     resolution: {integrity: sha512-jStwss93SITGBwt/niYrkf2C+/1KTeZCZl1LaeezTlqppAKeoQC7jxyqYuP72sxBGKCIbw7oHgbYssIRzT5FCQ==}
 
@@ -1140,8 +1167,8 @@ packages:
   '@types/minimatch@5.1.2':
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
 
-  '@types/node@18.16.1':
-    resolution: {integrity: sha512-DZxSZWXxFfOlx7k7Rv4LAyiMroaxa3Ly/7OOzZO8cBNho0YzAi4qlbrx8W27JGqG57IgR/6J7r+nOJWw6kcvZA==}
+  '@types/node@20.19.43':
+    resolution: {integrity: sha512-6oYBAi5ikg4Pl+kGsoYtawUMBT2zZMCvPNF7pVLnHZfd1zf38DRiWn/gT01RYCdUqkv7Fhr+C9ot4/tb+2sVvA==}
 
   '@types/qs@6.9.7':
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
@@ -5758,8 +5785,8 @@ packages:
   typescript-memoize@1.1.1:
     resolution: {integrity: sha512-GQ90TcKpIH4XxYTI2F98yEQYZgjNMOGPpOgdjIBhaLaWji5HPWlRnZ4AeA1hfBxtY7bCGDJsqDDHk/KaHOl5bA==}
 
-  typescript@5.1.3:
-    resolution: {integrity: sha512-XH627E9vkeqhlZFQuL+UsyAXEnibT0kWR2FWONlr4sTjvxyJYnyefgrkyECLzM5NenmKzRAy2rR/OlYLA1HkZw==}
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -5779,6 +5806,9 @@ packages:
 
   underscore@1.13.6:
     resolution: {integrity: sha512-+A5Sja4HP1M08MaXya7p5LvjuM7K6q/2EaC0+iovj/wOcMsTzMvDFbasi/oSapiwOlt252IqsKqPjCl7huKS0A==}
+
+  undici-types@6.21.0:
+    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
   unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
@@ -7150,7 +7180,23 @@ snapshots:
   '@types/body-parser@1.19.2':
     dependencies:
       '@types/connect': 3.4.35
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
+
+  '@types/broccoli-funnel@3.0.4':
+    dependencies:
+      '@types/node': 20.19.43
+      broccoli-node-api: 1.7.0
+      broccoli-plugin: 4.0.7
+    transitivePeerDependencies:
+      - supports-color
+
+  '@types/broccoli-merge-trees@4.2.4':
+    dependencies:
+      '@types/node': 20.19.43
+      broccoli-node-api: 1.7.0
+      broccoli-plugin: 4.0.7
+    transitivePeerDependencies:
+      - supports-color
 
   '@types/chai-as-promised@7.1.5':
     dependencies:
@@ -7160,13 +7206,13 @@ snapshots:
 
   '@types/connect@3.4.35':
     dependencies:
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/cookie@0.4.1': {}
 
   '@types/cors@2.8.13':
     dependencies:
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/ember-qunit@6.1.1(@ember/test-helpers@2.9.3(@babel/core@7.21.4)(ember-source@4.0.1(@babel/core@7.21.4)(webpack@5.81.0)))(qunit@2.19.4)':
     dependencies:
@@ -7184,27 +7230,6 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
-
-  '@types/ember@4.0.3':
-    dependencies:
-      '@types/ember__application': 4.0.5(@babel/core@7.21.4)
-      '@types/ember__array': 4.0.3
-      '@types/ember__component': 4.0.13
-      '@types/ember__controller': 4.0.4
-      '@types/ember__debug': 4.0.3
-      '@types/ember__engine': 4.0.4
-      '@types/ember__error': 4.0.2
-      '@types/ember__object': 4.0.5(@babel/core@7.21.4)
-      '@types/ember__polyfills': 4.0.1
-      '@types/ember__routing': 4.0.12
-      '@types/ember__runloop': 4.0.2
-      '@types/ember__service': 4.0.2
-      '@types/ember__string': 3.0.10
-      '@types/ember__template': 4.0.1
-      '@types/ember__test': 4.0.1(@babel/core@7.21.4)
-      '@types/ember__utils': 4.0.2
-      '@types/htmlbars-inline-precompile': 3.0.0
-      '@types/rsvp': 4.0.4
 
   '@types/ember@4.0.3(@babel/core@7.21.4)':
     dependencies:
@@ -7242,11 +7267,6 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  '@types/ember__array@4.0.3':
-    dependencies:
-      '@types/ember': 4.0.3
-      '@types/ember__object': 4.0.5
-
   '@types/ember__array@4.0.3(@babel/core@7.21.4)':
     dependencies:
       '@types/ember': 4.0.3(@babel/core@7.21.4)
@@ -7254,11 +7274,6 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
-
-  '@types/ember__component@4.0.13':
-    dependencies:
-      '@types/ember': 4.0.3
-      '@types/ember__object': 4.0.5
 
   '@types/ember__component@4.0.13(@babel/core@7.21.4)':
     dependencies:
@@ -7268,21 +7283,12 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  '@types/ember__controller@4.0.4':
-    dependencies:
-      '@types/ember__object': 4.0.5
-
   '@types/ember__controller@4.0.4(@babel/core@7.21.4)':
     dependencies:
       '@types/ember__object': 4.0.5(@babel/core@7.21.4)
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
-
-  '@types/ember__debug@4.0.3':
-    dependencies:
-      '@types/ember__object': 4.0.5
-      '@types/ember__owner': 4.0.3
 
   '@types/ember__debug@4.0.3(@babel/core@7.21.4)':
     dependencies:
@@ -7294,11 +7300,6 @@ snapshots:
 
   '@types/ember__destroyable@4.0.1': {}
 
-  '@types/ember__engine@4.0.4':
-    dependencies:
-      '@types/ember__object': 4.0.5
-      '@types/ember__owner': 4.0.3
-
   '@types/ember__engine@4.0.4(@babel/core@7.21.4)':
     dependencies:
       '@types/ember__object': 4.0.5(@babel/core@7.21.4)
@@ -7308,11 +7309,6 @@ snapshots:
       - supports-color
 
   '@types/ember__error@4.0.2': {}
-
-  '@types/ember__object@4.0.5':
-    dependencies:
-      '@types/ember': 4.0.3
-      '@types/rsvp': 4.0.4
 
   '@types/ember__object@4.0.5(@babel/core@7.21.4)':
     dependencies:
@@ -7326,26 +7322,15 @@ snapshots:
 
   '@types/ember__polyfills@4.0.1': {}
 
-  '@types/ember__routing@4.0.12':
-    dependencies:
-      '@types/ember': 4.0.3
-      '@types/ember__controller': 4.0.4
-      '@types/ember__object': 4.0.5
-      '@types/ember__service': 4.0.2
-
   '@types/ember__routing@4.0.12(@babel/core@7.21.4)':
     dependencies:
       '@types/ember': 4.0.3(@babel/core@7.21.4)
-      '@types/ember__controller': 4.0.4
+      '@types/ember__controller': 4.0.4(@babel/core@7.21.4)
       '@types/ember__object': 4.0.5(@babel/core@7.21.4)
-      '@types/ember__service': 4.0.2
+      '@types/ember__service': 4.0.2(@babel/core@7.21.4)
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
-
-  '@types/ember__runloop@4.0.2':
-    dependencies:
-      '@types/ember': 4.0.3
 
   '@types/ember__runloop@4.0.2(@babel/core@7.21.4)':
     dependencies:
@@ -7353,10 +7338,6 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
-
-  '@types/ember__service@4.0.2':
-    dependencies:
-      '@types/ember__object': 4.0.5
 
   '@types/ember__service@4.0.2(@babel/core@7.21.4)':
     dependencies:
@@ -7385,10 +7366,6 @@ snapshots:
       - '@babel/core'
       - supports-color
 
-  '@types/ember__utils@4.0.2':
-    dependencies:
-      '@types/ember': 4.0.3
-
   '@types/ember__utils@4.0.2(@babel/core@7.21.4)':
     dependencies:
       '@types/ember': 4.0.3(@babel/core@7.21.4)
@@ -7415,7 +7392,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.17.34':
     dependencies:
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
       '@types/send': 0.17.1
@@ -7429,21 +7406,21 @@ snapshots:
 
   '@types/fs-extra@5.1.0':
     dependencies:
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/fs-extra@8.1.2':
     dependencies:
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/glob@8.1.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/htmlbars-inline-precompile@3.0.0': {}
 
@@ -7451,7 +7428,7 @@ snapshots:
 
   '@types/keyv@3.1.4':
     dependencies:
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/mime@1.3.2': {}
 
@@ -7461,7 +7438,9 @@ snapshots:
 
   '@types/minimatch@5.1.2': {}
 
-  '@types/node@18.16.1': {}
+  '@types/node@20.19.43':
+    dependencies:
+      undici-types: 6.21.0
 
   '@types/qs@6.9.7': {}
 
@@ -7471,36 +7450,36 @@ snapshots:
 
   '@types/responselike@1.0.3':
     dependencies:
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/rimraf@2.0.5':
     dependencies:
       '@types/glob': 8.1.0
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/rsvp@4.0.4': {}
 
   '@types/send@0.17.1':
     dependencies:
       '@types/mime': 1.3.2
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/serve-static@1.15.1':
     dependencies:
       '@types/mime': 3.0.1
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
 
   '@types/symlink-or-copy@1.2.0': {}
 
-  '@typescript-eslint/parser@5.59.9(eslint@7.32.0)(typescript@5.1.3)':
+  '@typescript-eslint/parser@5.59.9(eslint@7.32.0)(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/scope-manager': 5.59.9
       '@typescript-eslint/types': 5.59.9
-      '@typescript-eslint/typescript-estree': 5.59.9(typescript@5.1.3)
+      '@typescript-eslint/typescript-estree': 5.59.9(typescript@5.9.3)
       debug: 4.3.4
       eslint: 7.32.0
     optionalDependencies:
-      typescript: 5.1.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -7511,7 +7490,7 @@ snapshots:
 
   '@typescript-eslint/types@5.59.9': {}
 
-  '@typescript-eslint/typescript-estree@5.59.9(typescript@5.1.3)':
+  '@typescript-eslint/typescript-estree@5.59.9(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/types': 5.59.9
       '@typescript-eslint/visitor-keys': 5.59.9
@@ -7519,9 +7498,9 @@ snapshots:
       globby: 11.1.0
       is-glob: 4.0.3
       semver: 7.6.2
-      tsutils: 3.21.0(typescript@5.1.3)
+      tsutils: 3.21.0(typescript@5.9.3)
     optionalDependencies:
-      typescript: 5.1.3
+      typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
 
@@ -9877,7 +9856,7 @@ snapshots:
     dependencies:
       '@types/cookie': 0.4.1
       '@types/cors': 2.8.13
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.4.2
@@ -11268,7 +11247,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 18.16.1
+      '@types/node': 20.19.43
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -13328,10 +13307,10 @@ snapshots:
 
   tslib@2.5.0: {}
 
-  tsutils@3.21.0(typescript@5.1.3):
+  tsutils@3.21.0(typescript@5.9.3):
     dependencies:
       tslib: 1.14.1
-      typescript: 5.1.3
+      typescript: 5.9.3
 
   tty-browserify@0.0.0: {}
 
@@ -13366,7 +13345,7 @@ snapshots:
 
   typescript-memoize@1.1.1: {}
 
-  typescript@5.1.3: {}
+  typescript@5.9.3: {}
 
   uc.micro@1.0.6: {}
 
@@ -13386,6 +13365,8 @@ snapshots:
       util-deprecate: 1.0.2
 
   underscore@1.13.6: {}
+
+  undici-types@6.21.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 

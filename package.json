@@ -1,11 +1,15 @@
 {
   "private": true,
   "scripts": {
-    "build": "pnpm --filter @upfluence/ember-brand-manager build",
-    "lint": "pnpm --filter @upfluence/ember-brand-manager lint",
+    "build": "pnpm --filter @upfluence/ember-brand-bundler build && pnpm --filter @upfluence/ember-brand-manager build",
+    "lint": "pnpm -r lint",
     "lint:fix": "pnpm --filter @upfluence/ember-brand-manager lint:fix",
-    "start": "pnpm --filter @upfluence/ember-brand-manager start",
-    "test": "pnpm --filter @upfluence/ember-brand-manager test",
-    "test:coverage": "pnpm --filter @upfluence/ember-brand-manager test:coverage"
+    "prepare": "pnpm --filter @upfluence/ember-brand-bundler build",
+    "start": "pnpm --filter @upfluence/ember-brand-bundler build && pnpm --filter @upfluence/ember-brand-manager start",
+    "test": "pnpm lint && pnpm --filter @upfluence/ember-brand-bundler test && pnpm --filter @upfluence/ember-brand-manager test:ember",
+    "test:coverage": "pnpm --filter @upfluence/ember-brand-bundler test && pnpm --filter @upfluence/ember-brand-manager test:coverage"
+  },
+  "devDependencies": {
+    "@upfluence/ember-brand-bundler": "workspace:*"
   }
 }
