@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { getOwnConfig } from '@embroider/macros';
 import sinon from 'sinon';
 import { requiredBrand } from '@upfluence/ember-brand-manager/decorators/required-brand';
 
@@ -58,7 +59,9 @@ module('Unit | Decorators | @requiredBrand', function (hooks) {
   });
 
   test('If the brand does not match the one set at buildtime, the user will be redirected to the fallbackRoute', function (assert) {
-    @requiredBrand('brand2', 'fallbackRoute')
+    const otherBrand = getOwnConfig().brand === 'brand2' ? 'default' : 'brand2';
+
+    @requiredBrand(otherBrand, 'fallbackRoute')
     class TestClass {}
     const test = new TestClass();
     test.router = this.routerStub;
@@ -67,10 +70,13 @@ module('Unit | Decorators | @requiredBrand', function (hooks) {
   });
 
   test('If the brand matches the one set at buildtime, no router transition occurs', function (assert) {
-    @requiredBrand('default', 'fallbackRoute')
-    class TestClass {}
+    @requiredBrand(getOwnConfig().brand, 'fallbackRoute')
+    class TestClass {
+      beforeModel() {}
+    }
     const test = new TestClass();
     test.router = this.routerStub;
+    test.beforeModel();
     assert.true(this.routerStub.transitionTo.notCalled);
   });
 });
