@@ -1,122 +1,49 @@
-@upfluence/ember-brand-manager
-==============================================================================
+# Ember brand tooling
 
-White-labeling brand manager for Ember.
+This pnpm workspace contains the Ember runtime addon and the host-side build tooling used for Upfluence branding.
 
-Work in progress - more features to come !
+## Packages
 
-Compatibility
-------------------------------------------------------------------------------
+- `@upfluence/ember-brand-manager`: the existing classic Ember addon.
+- `@upfluence/ember-brand-bundler`: the host-side Ember CLI build tooling.
 
-* Ember.js v3.24 or above
-* Ember CLI v3.24 or above
-* Node.js v12 or above
+## Development
 
-
-Installation
-------------------------------------------------------------------------------
-
-```
-ember install @upfluence/ember-brand-manager
-```
-
-Create a `brand-assets` folder at the root of your repository
-Move your public assets into this new folder. You should have something that looks like :
 ```shell
-└── brand-assets/
-    ├── default/
-    │   └── public/
-    │       ├── favicon.png
-    │       └── assets/
-    │           └── images/
-    │               └──logo.png
-    └── brand2/
-        └── color-scheme.json
-        └── public/
-            ├── favicon.png
-            └── assets/
-                └── images/
-                    └──logo.png
+pnpm install
+pnpm lint
+pnpm test
+pnpm build
 ```
 
-Usage
-------------------------------------------------------------------------------
+Package-specific documentation lives in each package directory.
 
-## General info
-The default folder will always be added when serving or building to the dist folder.
-the `brand2` should be the name of another brand that uses differents assets to the ones from the `default` version. 
-Assets for `brand2` should have the same name as the ones for the `default` brand ; this way they will overwrite the ones from the `default` folder.
+## Releases
 
-## Building or serving for another brand
-Your project will only serve or build the `default` brand on `ember build` or `ember start`.
-To specify another brand, either define a `BRAND` environment value in your environment or prepend your launch commands with the brand name.
+The packages are versioned independently. Run releases from a clean `main` branch with an upstream; `release-it` updates only the selected package, creates a package-qualified tag, and pushes the release commit and tag. GitHub Actions publishes the package represented by that tag.
 
-`BRAND=brand2 ember build`
-or
-`BRAND=brand2 ember s`
+Create the first bundler beta before the manager beta:
 
-## Addons
+```shell
+pnpm run release:bundler minor --preRelease=beta
+# @upfluence/ember-brand-bundler@0.1.0-beta.0
 
-This addon will also work with ember-addons. The destination folder in the `dist` will have the pakage name in order to keep the original asset serving of the addon functional. Engines being Ember Addons, they will also be supported natively.
-
-## Color Schemes
-
-The `brand-assets/[brand]/color-scheme.json` is a key-value formatted file that maps CSS Variables to their values.
-Eg.:
-
-```json
-{
-  "--color-primary-50": "#faf5ff",
-  "--color-primary-100": "#f3e8ff",
-  "--color-primary-400": "#C58CFE",
-  "--color-primary-500": "#A241FF",
-  "--color-primary-600": "#8521E0",
-  "--color-primary-900": "#440973"
-}
+pnpm run release:manager major --preRelease=beta
+# @upfluence/ember-brand-manager@2.0.0-beta.0
 ```
 
-## Helpers
+Continue a package's beta independently:
 
-The `required-brand` helper gives an easy way of checking if the target-brand matches the one set during buildtime.
-`required-brand` takes a brand name (string) as parameter, will compare it to the one configured at buildtime and return true/false if it matches.
-
-A common usage would be to display data for two different brands (default & brand2) in a template.
-
-```handlebars
-  {{#if (required-brand "brand2")}}
-    If brand2 is set at buildtime, brand2 content will be shown here
-  {{else}}
-    Default content will be displayed if brand2 is not set at buildtime
-  {{/if}}
+```shell
+pnpm run release:bundler --preRelease
+pnpm run release:manager --preRelease
 ```
 
-## Decorators
+Promote each package independently when it is stable:
 
-The `@requiredBrand` decorator allows restricting navigation to a specific route if the target brand is not the one defined at buildtime.
-Its parameters are:
-- `brand` - In our examples either "default" or "brand2"
-- `fallbackRoute` - the route as string that will be called by the Ember router's `transitionTo` method
-
-Example:
-```javascript
-  import { requiredBrand } from '@upfluence/ember-brand-manager/decorators/required-brand';
-
-  @requiredBrand('brand2', 'dashboardForBrand2')
-  export default class Dashboard extends Route {}
+```shell
+pnpm run release:bundler minor
+pnpm run release:manager major
 ```
 
-## Debugging
-Some debugging is available by setting the EBM_DEBUG env variable to true.
-
-`EBM_DEBUG=true BRAND=brand2 ember build`
-
-Contributing
-------------------------------------------------------------------------------
-
-See the [Contributing](CONTRIBUTING.md) guide for details.
-
-
-License
-------------------------------------------------------------------------------
-
-This project is licensed under the [MIT License](LICENSE.md).
+Prereleases are published under their prerelease identifier, such as `beta`; stable releases are published under `latest`. Release commands do not publish locally or create GitHub Releases.

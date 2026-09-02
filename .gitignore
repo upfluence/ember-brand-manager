@@ -3,25 +3,33 @@
 # compiled output
 /dist/
 /tmp/
+/packages/*/dist/
+/packages/*/tmp/
 
 # dependencies
 /bower_components/
 /node_modules/
+/packages/*/node_modules/
 
 # misc
 /.env*
+/packages/*/.env*
 /.pnp*
 /.sass-cache
 /.eslintcache
+/packages/*/.eslintcache
 /connect.lock
 /coverage/
+/packages/*/coverage/
 /libpeerconnection.log
 /npm-debug.log*
 /testem.log
+/packages/*/testem.log
 .scannerwork/
 
 # ember-try
 /.node_modules.ember-try/
+/packages/*/.node_modules.ember-try/
 /bower.json.ember-try
 /npm-shrinkwrap.json.ember-try
 /package.json.ember-try

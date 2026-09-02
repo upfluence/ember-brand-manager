@@ -14,20 +14,20 @@ else
   exit 1
 fi
 
-## Run ember test & generate code coverage with [ember-cli-code-coverage]
+## Run Ember tests and generate code coverage with ember-cli-code-coverage.
 echo ""
 echo ""
 echo "[Step2] Run ember test - dot reporter to generate lcovinfo file"
-COVERAGE=true ember test
+pnpm test:coverage
 
 ## Check that coverage folder has been generated
 echo ""
 echo ""
 echo "[Step3] Check that coverage folder has been generated"
-if [ -d "./coverage" ]; then
-  echo "./coverage directory successfully created."
+if [ -d "./packages/ember-brand-manager/coverage" ]; then
+  echo "./packages/ember-brand-manager/coverage directory successfully created."
 else
-  echo "./coverage directory not found. Check your configuration."
+  echo "./packages/ember-brand-manager/coverage directory not found. Check your configuration."
   exit 1
 fi
 
