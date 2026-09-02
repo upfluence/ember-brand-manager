@@ -5,11 +5,14 @@
     "lint": "pnpm -r lint",
     "lint:fix": "pnpm --filter @upfluence/ember-brand-manager lint:fix",
     "prepare": "pnpm --filter @upfluence/ember-brand-bundler build",
+    "release:bundler": "cd packages/ember-brand-bundler && release-it",
+    "release:manager": "cd packages/ember-brand-manager && release-it",
     "start": "pnpm --filter @upfluence/ember-brand-bundler build && pnpm --filter @upfluence/ember-brand-manager start",
     "test": "pnpm lint && pnpm --filter @upfluence/ember-brand-bundler test && pnpm --filter @upfluence/ember-brand-manager test:ember",
     "test:coverage": "pnpm --filter @upfluence/ember-brand-bundler test && pnpm --filter @upfluence/ember-brand-manager test:coverage"
   },
   "devDependencies": {
-    "@upfluence/ember-brand-bundler": "workspace:*"
+    "@upfluence/ember-brand-bundler": "workspace:*",
+    "release-it": "^20.2.1"
   }
 }

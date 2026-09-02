@@ -1,8 +1,10 @@
 {
   "name": "@upfluence/ember-brand-bundler",
   "version": "0.0.0",
-  "private": true,
   "description": "Host-side build tooling for white-labelled branded Ember applications.",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/upfluence/ember-brand-manager",
@@ -40,6 +42,24 @@
     "typescript": "5.9.3"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore(release): ${npm.name}@${version}",
+      "tagAnnotation": "${npm.name}@${version}",
+      "tagMatch": "@upfluence/ember-brand-bundler@*",
+      "tagName": "${npm.name}@${version}",
+      "requireBranch": "main",
+      "requireCleanWorkingDir": true,
+      "requireUpstream": true
+    },
+    "github": {
+      "release": false
+    },
+    "npm": {
+      "publish": false,
+      "skipChecks": true
+    }
   }
 }
