@@ -107,5 +107,23 @@
   },
   "@upfluence/ember-brand-manager/metadata": {
     "assets": "./brand-assets"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore(release): ${npm.name}@${version}",
+      "tagAnnotation": "${npm.name}@${version}",
+      "tagMatch": "@upfluence/ember-brand-manager@*",
+      "tagName": "${npm.name}@${version}",
+      "requireBranch": "main",
+      "requireCleanWorkingDir": true,
+      "requireUpstream": true
+    },
+    "github": {
+      "release": false
+    },
+    "npm": {
+      "publish": false,
+      "skipChecks": true
+    }
   }
 }

@@ -1,11 +1,11 @@
-import { BrandBundlerError } from './errors.js';
+import { BrandBundlerError } from './errors';
 import {
   DEFAULT_BRAND,
   DEFAULT_PAGE_TITLE,
   type BrandAssetOptions,
   type Environment,
   type ResolvedBrandAssetOptions
-} from './types.js';
+} from './types';
 
 const BRAND_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
 

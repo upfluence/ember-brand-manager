@@ -1,5 +1,5 @@
-import { BrandBundlerError } from './errors.js';
-import type { ResolvedBrandAssetOptions } from './types.js';
+import { BrandBundlerError } from './errors';
+import type { ResolvedBrandAssetOptions } from './types';
 
 const CUSTOM_PROPERTY_PATTERN = /^--[A-Za-z0-9_-]+$/;
 

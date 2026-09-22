@@ -1,5 +1,5 @@
-import { BrandBundlerError, BRAND_METADATA_KEY, type BrandedPackageCandidate } from '../core/index.js';
-import type { EmberCliAddon, EmberCliApplication, PackageManifest } from './types.js';
+import { BrandBundlerError, BRAND_METADATA_KEY, type BrandedPackageCandidate } from '../core/index';
+import type { EmberCliAddon, EmberCliApplication, PackageManifest } from './types';
 
 export function discoverBrandedPackageCandidates(app: EmberCliApplication): BrandedPackageCandidate[] {
   return discoverAddons(app.project.addons).reduce(

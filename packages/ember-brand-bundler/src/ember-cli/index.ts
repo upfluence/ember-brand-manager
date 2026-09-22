@@ -11,14 +11,14 @@ import {
   resolveBrandedPackages,
   type BrandAssetOptions,
   type ResolvedBrandAssetOptions
-} from '../core/index.js';
-import { discoverBrandedPackageCandidates } from './discovery.js';
-import { configureBrandedPackages } from './macros.js';
-import type { EmberCliAddon, EmberCliApplication, PackageManifest } from './types.js';
+} from '../core/index';
+import { discoverBrandedPackageCandidates } from './discovery';
+import { configureBrandedPackages } from './macros';
+import type { EmberCliAddon, EmberCliApplication, PackageManifest } from './types';
 
 const CONTENT_ADDON_NAME = '@upfluence/ember-brand-bundler';
 
-export type { BrandAssetOptions } from '../core/index.js';
+export type { BrandAssetOptions } from '../core/index';
 
 export function withBrandAssets<T extends EmberCliApplication>(app: T, options?: BrandAssetOptions): T {
   const resolvedOptions = resolveBrandOptions(options);

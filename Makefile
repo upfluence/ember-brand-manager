@@ -1,4 +1,4 @@
-.PHONY: start
+.PHONY: start release_bundler release_manager
 
 .EXPORT_ALL_VARIABLES:
 
@@ -48,14 +48,11 @@ help:	clear ## Displays the help message
 
 h: help ## Displays the help message
 
-version_patch: ## Creates & pushes a new patch tag
-	./scripts/new-version-tag patch
+release_bundler: ## Releases ember-brand-bundler
+	pnpm run release:bundler
 
-version_minor: ## Creates & pushes a new minor tag
-	./scripts/new-version-tag minor
-
-version_major: ## Creates & pushes a new major tag
-	./scripts/new-version-tag major
+release_manager: ## Releases ember-brand-manager
+	pnpm run release:manager
 
 sonar-report: ## Runs a bunch of commands that will finally lead to a new report in sonarqube
 	./scripts/generate_sonar_report

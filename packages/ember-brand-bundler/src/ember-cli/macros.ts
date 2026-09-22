@@ -2,8 +2,8 @@ import { join, resolve } from 'node:path';
 
 import { MacrosConfig } from '@embroider/macros/src/node';
 
-import { BrandBundlerError, type BrandedPackage } from '../core/index.js';
-import type { EmberCliApplication } from './types.js';
+import { BrandBundlerError, type BrandedPackage } from '../core/index';
+import type { EmberCliApplication } from './types';
 
 const RUNTIME_PACKAGE_NAME = '@upfluence/ember-brand-manager';
 

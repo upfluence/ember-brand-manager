@@ -1,13 +1,13 @@
 import { realpathSync, statSync } from 'node:fs';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 
-import { BrandBundlerError } from './errors.js';
+import { BrandBundlerError } from './errors';
 import {
   DEFAULT_BRAND,
   type AssetLayer,
   type BrandedPackage,
   type BrandedPackageCandidate
-} from './types.js';
+} from './types';
 
 interface BrandMetadata {
   assets: string;
