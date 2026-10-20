@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 import { MacrosConfig } from '@embroider/macros/src/node';
@@ -27,6 +28,10 @@ function configureBrandedPackage(
   brand: string
 ): void {
   const packageManifest = join(brandedPackage.root, 'package.json');
+
+  if (!existsSync(packageManifest)) {
+    throw new BrandBundlerError(`Package manifest for ${brandedPackage.name} does not exist: ${packageManifest}.`);
+  }
 
   try {
     macrosConfig.setOwnConfig(packageManifest, { brand });

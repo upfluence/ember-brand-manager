@@ -21,6 +21,7 @@ test('configures every branded package and returns the Ember application', (cont
   const app = fakeApplication(
     [
       addon({ root: runtimeRoot, pkg: runtimePackage }),
+      emberIntlAddon(),
       addon(firstPackage),
       addon(unrelatedPackage),
       addon(secondPackage)
@@ -43,6 +44,14 @@ test('configures every branded package and returns the Ember application', (cont
   assert.equal(
     contentAddon.contentFor('head-footer'),
     '<style>:root { --brand-primary: #111111; }</style>'
+  );
+  assert.equal(typeof contentAddon.treeForTranslations, 'function');
+
+  const translationTree = contentAddon.treeForTranslations('existing-translations');
+  assert.equal(translationTree.inputNodes[0], 'existing-translations');
+  assert.deepEqual(
+    translationTree.inputNodes.slice(1).map(({ destDir }) => destDir),
+    ['translations/0-default/000000', 'translations/1-override/000001']
   );
 
   const macrosConfig = MacrosConfig.for(app, resolve(app.project.configPath(), '..', '..'));
@@ -70,13 +79,13 @@ test('reports missing manifests for the affected branded package', (context) => 
   });
 
   assert.throws(
-    () => withBrandAssets(fakeApplication([addon(missingManifestPackage)])),
+    () => withBrandAssets(fakeApplication([emberIntlAddon(), addon(missingManifestPackage)])),
     /Package manifest for @upfluence\/missing-manifest does not exist/
   );
 });
 
 test('reports package-specific macro configuration failures after the build is finalized', () => {
-  const app = fakeApplication();
+  const app = fakeApplication([emberIntlAddon()]);
   const appRoot = resolve(app.project.configPath(), '..', '..');
 
   MacrosConfig.for(app, appRoot).finalize();
@@ -84,6 +93,79 @@ test('reports package-specific macro configuration failures after the build is f
   assert.throws(
     () => withBrandAssets(app),
     /Unable to configure branded package @upfluence\/ember-brand-manager: .*after configs have been finalized/
+  );
+});
+
+test('requires ember-intl only when branded translations are present', (context) => {
+  assert.throws(
+    () => withBrandAssets(fakeApplication([])),
+    /require the host application to include ember-intl as a direct dependency/
+  );
+
+  const assetsOnlyRuntime = temporaryPackage(context, '@upfluence/ember-brand-manager');
+  const hostPackage = temporaryPackage(context, '@upfluence/host', { isAddon: false });
+  const app = fakeApplication([addon(assetsOnlyRuntime)], hostPackage);
+
+  assert.equal(withBrandAssets(app), app);
+  assert.equal(
+    app.project.addons.find(({ name }) => name === '@upfluence/ember-brand-bundler').treeForTranslations,
+    undefined
+  );
+});
+
+test('rejects branded translation metadata on host applications', (context) => {
+  const hostPackage = temporaryPackage(context, '@upfluence/host', {
+    isAddon: false,
+    metadata: { translations: './brand-assets' }
+  });
+
+  assert.throws(
+    () => withBrandAssets(fakeApplication([], hostPackage)),
+    /only supported for addon packages/
+  );
+});
+
+test('keeps translation layer destinations unique and ordered', (context) => {
+  const firstPackage = temporaryPackage(context, '@upfluence/first', {
+    metadata: { translations: './brand-assets' },
+    brands: ['default', 'brand2']
+  });
+  const secondPackage = temporaryPackage(context, '@upfluence/second', {
+    metadata: { translations: './brand-assets' }
+  });
+  const assetsOnlyRuntime = temporaryPackage(context, '@upfluence/ember-brand-manager');
+  const hostPackage = temporaryPackage(context, '@upfluence/host', {
+    branded: false,
+    isAddon: false
+  });
+  const app = fakeApplication([
+    addon(assetsOnlyRuntime),
+    emberIntlAddon(),
+    addon(firstPackage),
+    addon(secondPackage)
+  ], hostPackage);
+
+  withBrandAssets(app, { brand: 'brand2' });
+
+  const translationTree = app.project.addons
+    .find(({ name }) => name === '@upfluence/ember-brand-bundler')
+    .treeForTranslations('existing-translations');
+
+  assert.deepEqual(
+    translationTree.inputNodes.slice(1).map(({ destDir }) => destDir),
+    [
+      'translations/0-default/000000',
+      'translations/0-default/000001',
+      'translations/1-override/000002'
+    ]
+  );
+  assert.deepEqual(
+    translationTree.inputNodes.slice(1).map(({ include }) => include.map(({ pattern }) => pattern)),
+    [
+      ['**/*.yml', '**/*.yaml'],
+      ['**/*.yml', '**/*.yaml'],
+      ['**/*.yml', '**/*.yaml']
+    ]
   );
 });
 
@@ -115,17 +197,39 @@ function addon(packageFixture) {
   };
 }
 
+function emberIntlAddon() {
+  return {
+    name: 'ember-intl',
+    root: '/ember-intl',
+    pkg: { name: 'ember-intl' },
+    addons: []
+  };
+}
+
 function temporaryPackage(context, name, options = {}) {
-  const { branded = true, isAddon = true, writeManifest = true } = options;
+  const {
+    branded = true,
+    isAddon = true,
+    writeManifest = true,
+    metadata = { assets: './brand-assets' },
+    brands = ['default']
+  } = options;
   const root = mkdtempSync(join(tmpdir(), 'ember-brand-bundler-'));
   const pkg = {
     name,
     version: '1.0.0',
     keywords: isAddon ? ['ember-addon'] : [],
-    ...(branded ? { [BRAND_METADATA_KEY]: { assets: './brand-assets' } } : {})
+    ...(branded ? { [BRAND_METADATA_KEY]: metadata } : {})
   };
 
-  if (branded) mkdirSync(join(root, 'brand-assets', 'default', 'public'), { recursive: true });
+  if (branded && metadata.assets !== undefined) {
+    brands.forEach((brand) => mkdirSync(join(root, metadata.assets, brand, 'public'), { recursive: true }));
+  }
+  if (branded && metadata.translations !== undefined) {
+    brands.forEach((brand) =>
+      mkdirSync(join(root, metadata.translations, brand, 'translations'), { recursive: true })
+    );
+  }
   if (writeManifest) writeFileSync(join(root, 'package.json'), JSON.stringify(pkg));
 
   context.after(() => rmSync(root, { recursive: true, force: true }));

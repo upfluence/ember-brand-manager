@@ -11,6 +11,8 @@ export interface EmberCliAddon {
   root?: string;
   pkg?: PackageManifest;
   addons?: EmberCliAddon[];
+  contentFor?(type: string): string | undefined;
+  treeForTranslations?(tree: unknown): unknown;
   [key: string]: unknown;
 }
 

@@ -6,11 +6,13 @@ import {
   DEFAULT_BRAND,
   type AssetLayer,
   type BrandedPackage,
-  type BrandedPackageCandidate
+  type BrandedPackageCandidate,
+  type TranslationLayer
 } from './types';
 
 interface BrandMetadata {
-  assets: string;
+  assets?: string;
+  translations?: string;
 }
 
 interface BrandedPackageResolution {
@@ -33,15 +35,53 @@ export function resolveBrandedPackages(candidates: readonly BrandedPackageCandid
 }
 
 export function createAssetLayers(brandedPackages: readonly BrandedPackage[], selectedBrand: string): AssetLayer[] {
-  const defaultLayers = brandedPackages.map(defaultAssetLayer);
+  const defaultLayers = brandedPackages.reduce<AssetLayer[]>(
+    (layers, brandedPackage) =>
+      brandedPackage.assetRoot === undefined
+        ? layers
+        : [...layers, defaultAssetLayer(brandedPackage, brandedPackage.assetRoot)],
+    []
+  );
 
   return selectedBrand === DEFAULT_BRAND
     ? defaultLayers
     : [
       ...defaultLayers,
-      ...brandedPackages
-        .map((brandedPackage) => brandOverrideLayer(brandedPackage, selectedBrand))
-        .reduce<AssetLayer[]>((layers, layer) => (layer === undefined ? layers : [...layers, layer]), [])
+      ...brandedPackages.reduce<AssetLayer[]>((layers, brandedPackage) => {
+        if (brandedPackage.assetRoot === undefined) return layers;
+
+        const layer = brandOverrideLayer(brandedPackage, brandedPackage.assetRoot, selectedBrand);
+        return layer === undefined ? layers : [...layers, layer];
+      }, [])
+    ];
+}
+
+export function createTranslationLayers(
+  brandedPackages: readonly BrandedPackage[],
+  selectedBrand: string
+): TranslationLayer[] {
+  const defaultLayers = brandedPackages.reduce<TranslationLayer[]>(
+    (layers, brandedPackage) =>
+      brandedPackage.translationRoot === undefined
+        ? layers
+        : [...layers, defaultTranslationLayer(brandedPackage, brandedPackage.translationRoot)],
+    []
+  );
+
+  return selectedBrand === DEFAULT_BRAND
+    ? defaultLayers
+    : [
+      ...defaultLayers,
+      ...brandedPackages.reduce<TranslationLayer[]>((layers, brandedPackage) => {
+        if (brandedPackage.translationRoot === undefined) return layers;
+
+        const layer = brandTranslationOverrideLayer(
+          brandedPackage,
+          brandedPackage.translationRoot,
+          selectedBrand
+        );
+        return layer === undefined ? layers : [...layers, layer];
+      }, [])
     ];
 }
 
@@ -50,13 +90,25 @@ function collectBrandedPackage(
   candidate: BrandedPackageCandidate
 ): BrandedPackageResolution {
   const root = packageDirectory(candidate);
+  const metadata = validateMetadata(candidate.name, candidate.metadata);
+
+  if (!candidate.isAddon && metadata.translations !== undefined) {
+    throw new BrandBundlerError(
+      `Brand translations for ${candidate.name} are only supported for addon packages. Keep host translations in the application's normal Ember Intl input.`
+    );
+  }
 
   return resolution.brandedPackagesByRoot.has(root)
     ? resolution
     : registerBrandedPackage(resolution, {
       name: candidate.name,
       root,
-      assetRoot: assetDirectory(candidate, root),
+      assetRoot: metadata.assets === undefined
+        ? undefined
+        : metadataDirectory(candidate.name, root, 'Asset root', metadata.assets),
+      translationRoot: metadata.translations === undefined
+        ? undefined
+        : metadataDirectory(candidate.name, root, 'Translation root', metadata.translations),
       destination: candidate.isAddon ? candidate.name : '.'
     });
 }
@@ -79,17 +131,27 @@ function registerBrandedPackage(
   return resolution;
 }
 
-function defaultAssetLayer(brandedPackage: BrandedPackage): AssetLayer {
+function defaultAssetLayer(brandedPackage: BrandedPackage, assetRoot: string): AssetLayer {
   return {
     brand: DEFAULT_BRAND,
     packageName: brandedPackage.name,
-    sourceDirectory: defaultDirectory(brandedPackage),
+    sourceDirectory: defaultAssetDirectory(brandedPackage.name, assetRoot),
     destination: brandedPackage.destination
   };
 }
 
-function brandOverrideLayer(brandedPackage: BrandedPackage, brand: string): AssetLayer | undefined {
-  const sourceDirectory = brandOverrideDirectory(brandedPackage, brand);
+function brandOverrideLayer(
+  brandedPackage: BrandedPackage,
+  assetRoot: string,
+  brand: string
+): AssetLayer | undefined {
+  const sourceDirectory = brandOverrideDirectory(
+    brandedPackage.name,
+    assetRoot,
+    brand,
+    'public',
+    'public assets'
+  );
 
   return sourceDirectory === undefined
     ? undefined
@@ -101,41 +163,85 @@ function brandOverrideLayer(brandedPackage: BrandedPackage, brand: string): Asse
     };
 }
 
+function defaultTranslationLayer(brandedPackage: BrandedPackage, translationRoot: string): TranslationLayer {
+  return {
+    brand: DEFAULT_BRAND,
+    packageName: brandedPackage.name,
+    sourceDirectory: defaultTranslationDirectory(brandedPackage.name, translationRoot)
+  };
+}
+
+function brandTranslationOverrideLayer(
+  brandedPackage: BrandedPackage,
+  translationRoot: string,
+  brand: string
+): TranslationLayer | undefined {
+  const sourceDirectory = brandOverrideDirectory(
+    brandedPackage.name,
+    translationRoot,
+    brand,
+    'translations',
+    'translations'
+  );
+
+  return sourceDirectory === undefined
+    ? undefined
+    : {
+      brand,
+      packageName: brandedPackage.name,
+      sourceDirectory
+    };
+}
+
 function packageDirectory(candidate: BrandedPackageCandidate): string {
   return expectedDirectory(candidate.root, `Package root for ${candidate.name}`);
 }
 
-function assetDirectory(candidate: BrandedPackageCandidate, packageRoot: string): string {
-  const label = `Asset root for ${candidate.name}`;
-  const assetPath = resolve(packageRoot, validateMetadata(candidate.name, candidate.metadata).assets);
+function metadataDirectory(packageName: string, packageRoot: string, rootLabel: string, path: string): string {
+  const label = `${rootLabel} for ${packageName}`;
+  const metadataPath = resolve(packageRoot, path);
 
-  ensureContainedPath(packageRoot, assetPath, label);
+  ensureContainedPath(packageRoot, metadataPath, label);
 
-  const assetRoot = expectedDirectory(assetPath, label);
-  ensureContainedPath(packageRoot, assetRoot, label);
+  const metadataRoot = expectedDirectory(metadataPath, label);
+  ensureContainedPath(packageRoot, metadataRoot, label);
 
-  return assetRoot;
+  return metadataRoot;
 }
 
-function defaultDirectory(brandedPackage: BrandedPackage): string {
-  const label = `${brandedPackage.name} default public assets`;
-  const expectedPath = join(brandedPackage.assetRoot, DEFAULT_BRAND, 'public');
+function defaultAssetDirectory(packageName: string, assetRoot: string): string {
+  return defaultBrandDirectory(packageName, assetRoot, 'public', 'public assets');
+}
+
+function defaultTranslationDirectory(packageName: string, translationRoot: string): string {
+  return defaultBrandDirectory(packageName, translationRoot, 'translations', 'translations');
+}
+
+function defaultBrandDirectory(packageName: string, root: string, directoryName: string, description: string): string {
+  const label = `${packageName} default ${description}`;
+  const expectedPath = join(root, DEFAULT_BRAND, directoryName);
   const sourceDirectory = expectedDirectory(expectedPath, label);
 
-  ensureContainedPath(brandedPackage.assetRoot, sourceDirectory, label);
+  ensureContainedPath(root, sourceDirectory, label);
 
   return sourceDirectory;
 }
 
-function brandOverrideDirectory(brandedPackage: BrandedPackage, brand: string): string | undefined {
-  const label = `${brandedPackage.name} ${brand} public assets`;
-  const expectedPath = join(brandedPackage.assetRoot, brand, 'public');
+function brandOverrideDirectory(
+  packageName: string,
+  root: string,
+  brand: string,
+  directoryName: string,
+  description: string
+): string | undefined {
+  const label = `${packageName} ${brand} ${description}`;
+  const expectedPath = join(root, brand, directoryName);
 
-  ensureContainedPath(brandedPackage.assetRoot, expectedPath, label);
+  ensureContainedPath(root, expectedPath, label);
 
   const sourceDirectory = directory(expectedPath, label);
 
-  if (sourceDirectory !== undefined) ensureContainedPath(brandedPackage.assetRoot, sourceDirectory, label);
+  if (sourceDirectory !== undefined) ensureContainedPath(root, sourceDirectory, label);
 
   return sourceDirectory;
 }
@@ -145,17 +251,37 @@ function validateMetadata(packageName: string, metadata: unknown): BrandMetadata
     throw new BrandBundlerError(`Brand metadata for ${packageName} must be an object.`);
   }
 
-  const assets = (metadata as Record<string, unknown>).assets;
+  const values = metadata as Record<string, unknown>;
+  const brandMetadata = {
+    assets: validateMetadataPath(packageName, 'assets', values.assets),
+    translations: validateMetadataPath(packageName, 'translations', values.translations)
+  };
 
-  if (typeof assets !== 'string' || assets.trim() === '') {
-    throw new BrandBundlerError(`Brand metadata for ${packageName} must declare a non-empty assets path.`);
+  if (brandMetadata.assets === undefined && brandMetadata.translations === undefined) {
+    throw new BrandBundlerError(
+      `Brand metadata for ${packageName} must declare a non-empty assets or translations path.`
+    );
   }
 
-  if (isAbsolute(assets)) {
-    throw new BrandBundlerError(`Brand metadata for ${packageName} must use a relative assets path.`);
+  return brandMetadata;
+}
+
+function validateMetadataPath(
+  packageName: string,
+  field: keyof BrandMetadata,
+  value: unknown
+): string | undefined {
+  if (value === undefined) return undefined;
+
+  if (typeof value !== 'string' || value.trim() === '') {
+    throw new BrandBundlerError(`Brand metadata for ${packageName} must declare a non-empty ${field} path.`);
   }
 
-  return { assets };
+  if (isAbsolute(value)) {
+    throw new BrandBundlerError(`Brand metadata for ${packageName} must use a relative ${field} path.`);
+  }
+
+  return value;
 }
 
 function expectedDirectory(path: string, label: string): string {

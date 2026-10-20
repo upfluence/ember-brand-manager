@@ -1,7 +1,7 @@
 export { BrandBundlerError } from './errors';
 export { buildColorSchemeStyle, renderBrandContent } from './content';
 export { resolveBrandOptions } from './options';
-export { createAssetLayers, resolveBrandedPackages } from './branded-packages';
+export { createAssetLayers, createTranslationLayers, resolveBrandedPackages } from './branded-packages';
 export {
   BRAND_METADATA_KEY,
   DEFAULT_BRAND,
@@ -10,5 +10,6 @@ export {
   type BrandAssetOptions,
   type BrandedPackage,
   type BrandedPackageCandidate,
-  type ResolvedBrandAssetOptions
+  type ResolvedBrandAssetOptions,
+  type TranslationLayer
 } from './types';

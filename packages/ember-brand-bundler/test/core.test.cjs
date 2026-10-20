@@ -9,6 +9,7 @@ const test = require('node:test');
 const {
   buildColorSchemeStyle,
   createAssetLayers,
+  createTranslationLayers,
   resolveBrandOptions,
   resolveBrandedPackages
 } = require('../dist/core/index.js');
@@ -48,12 +49,12 @@ test('rejects unsafe brand names', () => {
   assert.throws(() => resolveBrandOptions({ brand: '../brand2' }, {}), /Invalid brand name/);
 });
 
-test('renders deterministic color schemes only for non-empty objects', () => {
+test('renders color schemes in insertion order only for non-empty objects', () => {
   assert.equal(buildColorSchemeStyle(undefined), undefined);
   assert.equal(buildColorSchemeStyle({}), undefined);
   assert.equal(
     buildColorSchemeStyle({ '--brand-secondary': '#ffffff', '--brand-primary': '#111111' }),
-    '<style>:root { --brand-primary: #111111; --brand-secondary: #ffffff; }</style>'
+    '<style>:root { --brand-secondary: #ffffff; --brand-primary: #111111; }</style>'
   );
   assert.throws(() => buildColorSchemeStyle({ color: 'red' }), /Invalid CSS custom property/);
   assert.throws(() => buildColorSchemeStyle({ '--brand-primary': 10 }), /must be a string/);
@@ -177,17 +178,211 @@ test('rejects asset roots outside their package', (context) => {
   );
 });
 
+test('supports independent asset and translation metadata fields', (context) => {
+  const assetRoot = temporaryBrandedPackage(context);
+  const translationRoot = temporaryBrandedPackage(context);
+  const sharedRoot = temporaryBrandedPackage(context);
+  mkdirSync(join(assetRoot, 'assets'), { recursive: true });
+  mkdirSync(join(translationRoot, 'catalogs'), { recursive: true });
+  mkdirSync(join(sharedRoot, 'brand-assets'), { recursive: true });
+
+  const [assetPackage, translationPackage, sharedPackage] = resolveBrandedPackages([
+    brandedPackageCandidate(assetRoot, { assets: './assets' }),
+    brandedPackageCandidate(translationRoot, { translations: './catalogs' }, '@upfluence/translations'),
+    brandedPackageCandidate(
+      sharedRoot,
+      { assets: './brand-assets', translations: './brand-assets' },
+      '@upfluence/shared'
+    )
+  ]);
+
+  assert.ok(assetPackage.assetRoot);
+  assert.equal(assetPackage.translationRoot, undefined);
+  assert.equal(translationPackage.assetRoot, undefined);
+  assert.ok(translationPackage.translationRoot);
+  assert.equal(sharedPackage.assetRoot, sharedPackage.translationRoot);
+  assert.throws(
+    () => resolveBrandedPackages([brandedPackageCandidate(sharedRoot, {})]),
+    /must declare a non-empty assets or translations path/
+  );
+});
+
+test('creates translation defaults before optional selected-brand overrides', (context) => {
+  const firstRoot = temporaryBrandedPackage(context);
+  const secondRoot = temporaryBrandedPackage(context);
+  mkdirSync(join(firstRoot, 'brand-assets', 'default', 'translations'), { recursive: true });
+  mkdirSync(join(firstRoot, 'brand-assets', 'brand2', 'translations'), { recursive: true });
+  mkdirSync(join(secondRoot, 'brand-assets', 'default', 'translations'), { recursive: true });
+
+  const layers = createTranslationLayers(
+    resolveBrandedPackages([
+      brandedPackageCandidate(firstRoot, { translations: './brand-assets' }, '@upfluence/first'),
+      brandedPackageCandidate(secondRoot, { translations: './brand-assets' }, '@upfluence/second')
+    ]),
+    'brand2'
+  );
+
+  assert.deepEqual(
+    layers.map(({ brand, packageName }) => ({ brand, packageName })),
+    [
+      { brand: 'default', packageName: '@upfluence/first' },
+      { brand: 'default', packageName: '@upfluence/second' },
+      { brand: 'brand2', packageName: '@upfluence/first' }
+    ]
+  );
+});
+
+test('requires valid default translations when translation metadata is declared', (context) => {
+  const missingRoot = temporaryBrandedPackage(context);
+  const invalidRoot = temporaryBrandedPackage(context);
+  mkdirSync(join(missingRoot, 'brand-assets'), { recursive: true });
+  mkdirSync(join(invalidRoot, 'brand-assets', 'default'), { recursive: true });
+  writeFileSync(join(invalidRoot, 'brand-assets', 'default', 'translations'), 'not a directory');
+
+  assert.throws(
+    () =>
+      createTranslationLayers(
+        resolveBrandedPackages([
+          brandedPackageCandidate(missingRoot, { translations: './brand-assets' })
+        ]),
+        'default'
+      ),
+    /default translations does not exist/
+  );
+  assert.throws(
+    () =>
+      createTranslationLayers(
+        resolveBrandedPackages([
+          brandedPackageCandidate(invalidRoot, { translations: './brand-assets' })
+        ]),
+        'default'
+      ),
+    /default translations is not a directory/
+  );
+});
+
+test('rejects invalid and escaping translation directories', (context) => {
+  const defaultRoot = temporaryBrandedPackage(context);
+  const invalidRoot = temporaryBrandedPackage(context);
+  const escapingRoot = temporaryBrandedPackage(context);
+  const outsideRoot = temporaryBrandedPackage(context);
+  mkdirSync(join(defaultRoot, 'brand-assets', 'default'), { recursive: true });
+  mkdirSync(join(invalidRoot, 'brand-assets', 'default', 'translations'), { recursive: true });
+  mkdirSync(join(invalidRoot, 'brand-assets', 'brand2'), { recursive: true });
+  writeFileSync(join(invalidRoot, 'brand-assets', 'brand2', 'translations'), 'not a directory');
+  mkdirSync(join(escapingRoot, 'brand-assets', 'default', 'translations'), { recursive: true });
+  mkdirSync(join(escapingRoot, 'brand-assets', 'brand2'), { recursive: true });
+  mkdirSync(join(outsideRoot, 'translations'), { recursive: true });
+  symlinkSync(
+    join(outsideRoot, 'translations'),
+    join(defaultRoot, 'brand-assets', 'default', 'translations')
+  );
+  symlinkSync(
+    join(outsideRoot, 'translations'),
+    join(escapingRoot, 'brand-assets', 'brand2', 'translations')
+  );
+
+  assert.throws(
+    () =>
+      createTranslationLayers(
+        resolveBrandedPackages([
+          brandedPackageCandidate(defaultRoot, { translations: './brand-assets' })
+        ]),
+        'default'
+      ),
+    /must stay within/
+  );
+  assert.throws(
+    () =>
+      createTranslationLayers(
+        resolveBrandedPackages([
+          brandedPackageCandidate(invalidRoot, { translations: './brand-assets' })
+        ]),
+        'brand2'
+      ),
+    /brand2 translations is not a directory/
+  );
+  assert.throws(
+    () =>
+      createTranslationLayers(
+        resolveBrandedPackages([
+          brandedPackageCandidate(escapingRoot, { translations: './brand-assets' })
+        ]),
+        'brand2'
+      ),
+    /must stay within/
+  );
+});
+
+test('validates declared translation roots', (context) => {
+  const root = temporaryBrandedPackage(context);
+  const outsideRoot = temporaryBrandedPackage(context);
+  mkdirSync(join(outsideRoot, 'translations'), { recursive: true });
+  writeFileSync(join(root, 'not-a-directory'), 'translations');
+  symlinkSync(join(outsideRoot, 'translations'), join(root, 'linked-translations'));
+
+  assert.throws(
+    () => resolveBrandedPackages([brandedPackageCandidate(root, { translations: '' })]),
+    /non-empty translations path/
+  );
+  assert.throws(
+    () =>
+      resolveBrandedPackages([
+        brandedPackageCandidate(root, { translations: join(root, 'translations') })
+      ]),
+    /relative translations path/
+  );
+  assert.throws(
+    () => resolveBrandedPackages([brandedPackageCandidate(root, { translations: './missing' })]),
+    /Translation root .* does not exist/
+  );
+  assert.throws(
+    () =>
+      resolveBrandedPackages([
+        brandedPackageCandidate(root, { translations: './not-a-directory' })
+      ]),
+    /Translation root .* is not a directory/
+  );
+  assert.throws(
+    () =>
+      resolveBrandedPackages([
+        brandedPackageCandidate(root, { translations: './linked-translations' })
+      ]),
+    /must stay within/
+  );
+});
+
+test('rejects translation roots outside packages and translations on host applications', (context) => {
+  const root = temporaryBrandedPackage(context);
+  mkdirSync(join(root, 'brand-assets'), { recursive: true });
+
+  assert.throws(
+    () =>
+      resolveBrandedPackages([
+        brandedPackageCandidate(root, { translations: '../brand-assets' })
+      ]),
+    /must stay within/
+  );
+  assert.throws(
+    () =>
+      resolveBrandedPackages([
+        { ...brandedPackageCandidate(root, { translations: './brand-assets' }), isAddon: false }
+      ]),
+    /only supported for addon packages/
+  );
+});
+
 function temporaryBrandedPackage(context) {
   const root = mkdtempSync(join(tmpdir(), 'ember-brand-bundler-'));
   context.after(() => rmSync(root, { recursive: true, force: true }));
   return root;
 }
 
-function brandedPackageCandidate(root) {
+function brandedPackageCandidate(root, metadata = { assets: './brand-assets' }, name = '@upfluence/example') {
   return {
-    name: '@upfluence/example',
+    name,
     root,
     isAddon: true,
-    metadata: { assets: './brand-assets' }
+    metadata
   };
 }

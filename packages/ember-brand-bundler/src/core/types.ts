@@ -26,7 +26,8 @@ export interface BrandedPackageCandidate {
 export interface BrandedPackage {
   name: string;
   root: string;
-  assetRoot: string;
+  assetRoot?: string;
+  translationRoot?: string;
   destination: string;
 }
 
@@ -35,6 +36,12 @@ export interface AssetLayer {
   packageName: string;
   sourceDirectory: string;
   destination: string;
+}
+
+export interface TranslationLayer {
+  brand: string;
+  packageName: string;
+  sourceDirectory: string;
 }
 
 export type Environment = Readonly<Record<string, string | undefined>>;

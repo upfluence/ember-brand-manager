@@ -17,7 +17,7 @@ ember install @upfluence/ember-brand-manager
 pnpm add --save-dev @upfluence/ember-brand-bundler
 ```
 
-Branding is host-managed. The runtime addon does not move public assets or inject page content on its own.
+Branding is host-managed. The runtime addon does not move public assets, contribute translations, or inject page content on its own.
 
 ## Host setup
 
@@ -54,17 +54,20 @@ Omitting `withBrandAssets` is not supported. Existing applications must move bra
 
 ## Branded packages
 
-Every application or addon that ships branded assets declares its asset directory in `package.json`:
+Applications and addons opt into public assets and addon translations through independent metadata fields. Both fields may point to the same brand root:
 
 ```json
 {
   "@upfluence/ember-brand-manager/metadata": {
-    "assets": "./brand-assets"
+    "assets": "./brand-assets",
+    "translations": "./brand-assets"
   }
 }
 ```
 
-Assets follow this layout:
+At least one field is required. Packages that only ship one capability can omit the other field.
+
+Brand content follows this layout:
 
 ```text
 brand-assets/
@@ -72,13 +75,19 @@ brand-assets/
     public/
       assets/
         logo.svg
+    translations/
+      en-us.yaml
   brand2/
     public/
       assets/
         logo.svg
+    translations/
+      en-us.yaml
 ```
 
-Every branded package must include `default/public`. The default layer is always included, then an available selected-brand layer overrides files with matching paths. Addon assets remain namespaced beneath the addon package name.
+Declaring `assets` requires `default/public`. The default layer is always included, then an available selected-brand layer overrides files with matching paths. Addon assets remain namespaced beneath the addon package name.
+
+Declaring `translations` requires `default/translations`, supports `.yaml` and `.yml` catalogs, and requires the host to depend directly on Ember Intl. Translation metadata is addon-only; host translations remain in the application's normal Ember Intl input. All default catalogs are merged before selected-brand overrides, and keys should be package-namespaced to avoid conflicts.
 
 The bundler registers `{ brand }` as the package's own `@embroider/macros` configuration. Runtime code in every branded application or addon can read the selected brand through `getOwnConfig().brand`.
 
