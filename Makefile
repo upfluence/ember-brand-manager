@@ -1,4 +1,4 @@
-.PHONY: start
+.PHONY: start release_bundler release_manager
 
 .EXPORT_ALL_VARIABLES:
 
@@ -20,15 +20,25 @@ echo:
 	@echo Starting ember-brand-manager
 
 start:
-	ember s --port $(PORT) --environment ${ENV}
+	pnpm --filter @upfluence/ember-brand-bundler build
+	pnpm --filter @upfluence/ember-brand-manager exec ember serve --port $(PORT) --environment ${ENV}
 
 build:
-	ember build --environment ${ENV}
+	pnpm --filter @upfluence/ember-brand-bundler build
+	pnpm --filter @upfluence/ember-brand-manager exec ember build --environment ${ENV}
+
+test:
+	pnpm test
 
 clean: ## Cleans ./node_modules && ./dist
-	@echo "Cleaning up ./node_modules & ./dist folders"
+	@echo "Cleaning up workspace dependencies and build outputs"
 	-rm -r ./node_modules
 	-rm -r ./dist
+	-rm -r ./packages/ember-brand-manager/node_modules
+	-rm -r ./packages/ember-brand-manager/dist
+	-rm -r ./packages/ember-brand-manager/tmp
+	-rm -r ./packages/ember-brand-bundler/node_modules
+	-rm -r ./packages/ember-brand-bundler/dist
 	@echo ""; echo "-------------------------------"; echo ""
 
 re:	clean install echo start ## Reinstalls dependencies & starts the dev server
@@ -38,14 +48,11 @@ help:	clear ## Displays the help message
 
 h: help ## Displays the help message
 
-version_patch: ## Creates & pushes a new patch tag
-	./scripts/new-version-tag patch
+release_bundler: ## Releases ember-brand-bundler
+	pnpm run release:bundler
 
-version_minor: ## Creates & pushes a new minor tag
-	./scripts/new-version-tag minor
-
-version_major: ## Creates & pushes a new major tag
-	./scripts/new-version-tag major
+release_manager: ## Releases ember-brand-manager
+	pnpm run release:manager
 
 sonar-report: ## Runs a bunch of commands that will finally lead to a new report in sonarqube
 	./scripts/generate_sonar_report
