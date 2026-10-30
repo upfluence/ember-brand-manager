@@ -1,3 +1,5 @@
+/// <reference types="ember-source/types" />
+
 // Types for compiled templates
 declare module '@upfluence/ember-brand-manager/templates/*' {
   import { TemplateFactory } from 'ember-cli-htmlbars';
