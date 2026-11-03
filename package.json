@@ -38,7 +38,7 @@
     "broccoli-funnel": "^3.0.8",
     "broccoli-merge-trees": "^4.2.0",
     "ember-cli-babel": "^8.2.0",
-    "ember-cli-htmlbars": "^6.3.0",
+    "ember-cli-htmlbars": "^7.0.1",
     "ember-cli-typescript": "^5.2.1"
   },
   "devDependencies": {
