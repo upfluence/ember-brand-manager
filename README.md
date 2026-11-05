@@ -8,9 +8,11 @@ Work in progress - more features to come !
 Compatibility
 ------------------------------------------------------------------------------
 
-* Ember.js v3.24 or above
-* Ember CLI v3.24 or above
-* Node.js v12 or above
+* Ember.js v6.12 or above
+* Node.js v20 or above
+
+**Breaking:** support for Ember versions below 6.12 has been dropped. The addon now relies on the `service` import from
+`@ember/service`.
 
 
 Installation
@@ -19,6 +21,8 @@ Installation
 ```
 ember install @upfluence/ember-brand-manager
 ```
+
+Required peer dependency: `ember-source` `^6.12.0`.
 
 Create a `brand-assets` folder at the root of your repository
 Move your public assets into this new folder. You should have something that looks like :

@@ -1,6 +1,6 @@
 import { getOwnConfig } from '@embroider/macros';
 import { assert } from '@ember/debug';
-import { inject as service } from '@ember/service';
+import { service } from '@ember/service';
 import Transition from '@ember/routing/transition';
 
 interface Constructable {
