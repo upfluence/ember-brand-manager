@@ -3,7 +3,8 @@
   "version": "1.0.5",
   "description": "White-labeling brand manager for Ember.",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com",
+    "tag": "beta"
   },
   "keywords": [
     "ember-addon"
