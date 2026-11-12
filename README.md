@@ -1,15 +1,32 @@
-@upfluence/ember-brand-manager
-==============================================================================
+<div align="center">
+  <img src=".github/assets/logo.svg" width="96" height="96" alt="">
+  <h1>@upfluence/ember-brand-manager</h1>
+  <p>White-labeling brand manager for Ember.</p>
 
-White-labeling brand manager for Ember.
+[![ci](https://github.com/upfluence/ember-brand-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/upfluence/ember-brand-manager/actions/workflows/ci.yml)
+[![Coverage](https://sonarqube.upfluence.co/api/project_badges/measure?project=ember-brand-manager&metric=coverage&token=sqb_24fde0af6065947fd22cfd11abdf87ed69e7f20d)](https://sonarqube.upfluence.co/dashboard?id=ember-brand-manager)
+[![Maintainability Rating](https://sonarqube.upfluence.co/api/project_badges/measure?project=ember-brand-manager&metric=sqale_rating&token=sqb_24fde0af6065947fd22cfd11abdf87ed69e7f20d)](https://sonarqube.upfluence.co/dashboard?id=ember-brand-manager)
+[![Quality Gate Status](https://sonarqube.upfluence.co/api/project_badges/measure?project=ember-brand-manager&metric=alert_status&token=sqb_24fde0af6065947fd22cfd11abdf87ed69e7f20d)](https://sonarqube.upfluence.co/dashboard?id=ember-brand-manager)
+[![Code Smells](https://sonarqube.upfluence.co/api/project_badges/measure?project=ember-brand-manager&metric=code_smells&token=sqb_24fde0af6065947fd22cfd11abdf87ed69e7f20d)](https://sonarqube.upfluence.co/dashboard?id=ember-brand-manager)
+
+[Compatibility](#compatibility) •
+[Installation](#installation) •
+[Usage](#usage) •
+[Contributing](#contributing) •
+[License](#license)
+
+</div>
 
 Work in progress - more features to come !
 
 Compatibility
 ------------------------------------------------------------------------------
 
-* Ember.js v6.12 or above
-* Node.js v20 or above
+- Ember.js v6.12 or above
+- Node.js v24 or above
+- pnpm 10
+
+Apps on Ember.js below 6.12 should stay on `1.x`.
 
 **Breaking:** support for Ember versions below 6.12 has been dropped. The addon now relies on the `service` import from
 `@ember/service`.
@@ -19,7 +36,7 @@ Installation
 ------------------------------------------------------------------------------
 
 ```
-ember install @upfluence/ember-brand-manager
+pnpm add @upfluence/ember-brand-manager
 ```
 
 Required peer dependency: `ember-source` `^6.12.0`.
