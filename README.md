@@ -134,10 +134,14 @@ Some debugging is available by setting the EBM_DEBUG env variable to true.
 Contributing
 ------------------------------------------------------------------------------
 
-See the [Contributing](CONTRIBUTING.md) guide for details.
+- `make install`
+- `pnpm lint` / `pnpm lint:fix`
+- `pnpm test` – Runs the linters and the test suite
+- `pnpm test:ember-compatibility` – Runs the test suite against multiple Ember versions
+- `pnpm start` – Serves the dummy application at [http://localhost:4200](http://localhost:4200)
 
 
 License
 ------------------------------------------------------------------------------
 
-This project is licensed under the [MIT License](LICENSE.md).
+This project is licensed under the [MIT License](LICENSE).
