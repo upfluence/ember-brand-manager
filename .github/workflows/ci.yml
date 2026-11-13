@@ -10,12 +10,12 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  NODE_VERSION: 20
+  NODE_VERSION: ${{ vars.NODE_VERSION }}
 
 jobs:
   release:
     name: Release Package
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     if: contains(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v3

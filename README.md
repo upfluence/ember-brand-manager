@@ -1,24 +1,45 @@
-@upfluence/ember-brand-manager
-==============================================================================
+<div align="center">
+  <img src=".github/assets/logo.svg" width="96" height="96" alt="">
+  <h1>@upfluence/ember-brand-manager</h1>
+  <p>White-labeling brand manager for Ember.</p>
 
-White-labeling brand manager for Ember.
+[![ci](https://github.com/upfluence/ember-brand-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/upfluence/ember-brand-manager/actions/workflows/ci.yml)
+[![Coverage](https://sonarqube.upfluence.co/api/project_badges/measure?project=ember-brand-manager&metric=coverage&token=sqb_24fde0af6065947fd22cfd11abdf87ed69e7f20d)](https://sonarqube.upfluence.co/dashboard?id=ember-brand-manager)
+[![Maintainability Rating](https://sonarqube.upfluence.co/api/project_badges/measure?project=ember-brand-manager&metric=sqale_rating&token=sqb_24fde0af6065947fd22cfd11abdf87ed69e7f20d)](https://sonarqube.upfluence.co/dashboard?id=ember-brand-manager)
+[![Quality Gate Status](https://sonarqube.upfluence.co/api/project_badges/measure?project=ember-brand-manager&metric=alert_status&token=sqb_24fde0af6065947fd22cfd11abdf87ed69e7f20d)](https://sonarqube.upfluence.co/dashboard?id=ember-brand-manager)
+[![Code Smells](https://sonarqube.upfluence.co/api/project_badges/measure?project=ember-brand-manager&metric=code_smells&token=sqb_24fde0af6065947fd22cfd11abdf87ed69e7f20d)](https://sonarqube.upfluence.co/dashboard?id=ember-brand-manager)
+
+[Compatibility](#compatibility) •
+[Installation](#installation) •
+[Usage](#usage) •
+[Contributing](#contributing) •
+[License](#license)
+
+</div>
 
 Work in progress - more features to come !
 
 Compatibility
 ------------------------------------------------------------------------------
 
-* Ember.js v3.24 or above
-* Ember CLI v3.24 or above
-* Node.js v12 or above
+- Ember.js v6.12 or above
+- Node.js v24 or above
+- pnpm 10
+
+Apps on Ember.js below 6.12 should stay on `1.x`.
+
+**Breaking:** support for Ember versions below 6.12 has been dropped. The addon now relies on the `service` import from
+`@ember/service`.
 
 
 Installation
 ------------------------------------------------------------------------------
 
 ```
-ember install @upfluence/ember-brand-manager
+pnpm add @upfluence/ember-brand-manager
 ```
+
+Required peer dependency: `ember-source` `^6.12.0`.
 
 Create a `brand-assets` folder at the root of your repository
 Move your public assets into this new folder. You should have something that looks like :
@@ -113,10 +134,14 @@ Some debugging is available by setting the EBM_DEBUG env variable to true.
 Contributing
 ------------------------------------------------------------------------------
 
-See the [Contributing](CONTRIBUTING.md) guide for details.
+- `make install`
+- `pnpm lint` / `pnpm lint:fix`
+- `pnpm test` – Runs the linters and the test suite
+- `pnpm test:ember-compatibility` – Runs the test suite against multiple Ember versions
+- `pnpm start` – Serves the dummy application at [http://localhost:4200](http://localhost:4200)
 
 
 License
 ------------------------------------------------------------------------------
 
-This project is licensed under the [MIT License](LICENSE.md).
+This project is licensed under the [MIT License](LICENSE).
